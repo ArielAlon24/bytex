@@ -1,0 +1,15 @@
+[project]
+name = "structure"
+version = "0.1.0"
+description = "Pydantic-like binary validation"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest==8.3.5"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
