@@ -1,0 +1,126 @@
+import pytest
+from utils import _create_fields, _create_instance, Values
+
+from structure import Endianes
+from structure.errors import AlignmentError
+from structure.codecs import IntegerCodec
+from structure import Sign
+from structure.data_types import Integer
+from structure._structure.method_creators import _create_dump
+
+
+@pytest.mark.parametrize(
+    ("values", "endianes", "expected_bytes"),
+    [
+        (
+            {
+                "a": Integer(codec=IntegerCodec(8, Sign.SIGNED), value=20),
+                "b": Integer(codec=IntegerCodec(16, Sign.UNSIGNED), value=128),
+            },
+            Endianes.BIG,
+            b"\x14\x00\x80",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(8, Sign.UNSIGNED), value=0xAB),
+                "b": Integer(codec=IntegerCodec(16, Sign.UNSIGNED), value=0x1234),
+            },
+            Endianes.LITTLE,
+            b"\x34\x12\xab",
+        ),
+        (
+            {
+                "x": Integer(codec=IntegerCodec(8, Sign.SIGNED), value=-1),
+                "y": Integer(codec=IntegerCodec(8, Sign.SIGNED), value=-128),
+            },
+            Endianes.BIG,
+            b"\xff\x80",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(16, Sign.SIGNED), value=-2),
+                "b": Integer(codec=IntegerCodec(8, Sign.UNSIGNED), value=255),
+            },
+            Endianes.LITTLE,
+            b"\xff\xfe\xff",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(24, Sign.UNSIGNED), value=0x123456),
+            },
+            Endianes.BIG,
+            b"\x12\x34\x56",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(24, Sign.UNSIGNED), value=0x123456),
+            },
+            Endianes.LITTLE,
+            b"\x56\x34\x12",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(8, Sign.UNSIGNED), value=0x11),
+                "b": Integer(codec=IntegerCodec(16, Sign.UNSIGNED), value=0x2233),
+                "c": Integer(codec=IntegerCodec(32, Sign.UNSIGNED), value=0x44556677),
+            },
+            Endianes.LITTLE,
+            b"\x77\x66\x55\x44\x33\x22\x11",
+        ),
+    ],
+)
+def test_dump_success(values: Values, endianes: Endianes, expected_bytes: bytes):
+    fields = _create_fields(values)
+    instance = _create_instance(values)
+    dump_method = _create_dump(fields)
+    data = dump_method(instance, endianes)
+    assert data == expected_bytes, f"{data.hex()} != {expected_bytes.hex()}"
+
+
+@pytest.mark.parametrize(
+    ("values", "endianes", "expected_message"),
+    [
+        (
+            {
+                "a": Integer(codec=IntegerCodec(8, Sign.SIGNED), value=0),
+                "b": Integer(codec=IntegerCodec(15, Sign.UNSIGNED), value=0),
+            },
+            Endianes.BIG,
+            "Cannot dump a structure whose bit size is not a multiple of 8",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(4, Sign.UNSIGNED), value=1),
+                "b": Integer(codec=IntegerCodec(4, Sign.UNSIGNED), value=2),
+                "c": Integer(codec=IntegerCodec(1, Sign.UNSIGNED), value=0),
+            },
+            Endianes.LITTLE,
+            "Cannot dump a structure whose bit size is not a multiple of 8",
+        ),
+        (
+            {
+                "a": Integer(codec=IntegerCodec(7, Sign.UNSIGNED), value=0),
+            },
+            Endianes.BIG,
+            "Cannot dump a structure whose bit size is not a multiple of 8",
+        ),
+        (
+            {
+                "x": Integer(codec=IntegerCodec(16, Sign.SIGNED), value=123),
+                "y": Integer(codec=IntegerCodec(16, Sign.UNSIGNED), value=456),
+                "z": Integer(codec=IntegerCodec(4, Sign.UNSIGNED), value=5),
+            },
+            Endianes.LITTLE,
+            "Cannot dump a structure whose bit size is not a multiple of 8",
+        ),
+    ],
+)
+def test_dump_failure(values: Values, endianes: Endianes, expected_message: str):
+    fields = _create_fields(values)
+    instance = _create_instance(values)
+    dump_method = _create_dump(fields)
+
+    with pytest.raises(AlignmentError) as exc_info:
+        dump_method(instance, endianes)
+
+    assert expected_message == str(exc_info.value)
