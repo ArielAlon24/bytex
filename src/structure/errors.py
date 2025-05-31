@@ -16,3 +16,7 @@ class InsufficientDataError(StructureError):
 
 class ParsingError(StructureError):
     pass
+
+
+class UninitializedAccessError(StructureError):
+    pass

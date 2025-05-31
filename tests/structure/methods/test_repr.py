@@ -1,11 +1,9 @@
 import pytest
-from utils import _create_fields, _create_instance, Values
+from utils import Value, _create_codecs, _create_instance, Values
 
 from structure._structure.method_creators import _create_repr
 from structure.codecs import IntegerCodec
 from structure import Sign
-from structure.data_types.base_data_type import BaseDataType
-from structure.data_types import Integer
 
 
 @pytest.mark.parametrize(
@@ -14,10 +12,8 @@ from structure.data_types import Integer
         (
             "Mixed",
             {
-                "a": Integer(
-                    codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=20
-                ),
-                "b": Integer(
+                "a": Value(codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=20),
+                "b": Value(
                     codec=IntegerCodec(bit_count=16, sign=Sign.UNSIGNED), value=128
                 ),
             },
@@ -26,19 +22,15 @@ from structure.data_types import Integer
         (
             "SignedNegative",
             {
-                "x": Integer(
-                    codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=-5
-                ),
-                "y": Integer(
-                    codec=IntegerCodec(bit_count=4, sign=Sign.SIGNED), value=-1
-                ),
+                "x": Value(codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=-5),
+                "y": Value(codec=IntegerCodec(bit_count=4, sign=Sign.SIGNED), value=-1),
             },
             "SignedNegative(x: I8 = -5, y: I4 = -1)",
         ),
         (
             "UnsignedOnly",
             {
-                "val": Integer(
+                "val": Value(
                     codec=IntegerCodec(bit_count=12, sign=Sign.UNSIGNED), value=4095
                 ),
             },
@@ -47,11 +39,11 @@ from structure.data_types import Integer
         (
             "MaxBitWidth",
             {
-                "m": Integer(
+                "m": Value(
                     codec=IntegerCodec(bit_count=24, sign=Sign.UNSIGNED),
                     value=(1 << 24) - 1,
                 ),
-                "n": Integer(
+                "n": Value(
                     codec=IntegerCodec(bit_count=32, sign=Sign.SIGNED), value=-(1 << 31)
                 ),
             },
@@ -60,10 +52,8 @@ from structure.data_types import Integer
         (
             "ZeroValues",
             {
-                "z1": Integer(
-                    codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=0
-                ),
-                "z2": Integer(
+                "z1": Value(codec=IntegerCodec(bit_count=8, sign=Sign.SIGNED), value=0),
+                "z2": Value(
                     codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED), value=0
                 ),
             },
@@ -72,8 +62,8 @@ from structure.data_types import Integer
     ],
 )
 def test_repr(name: str, values: Values, expected_repr: str):
-    fields = _create_fields(values)
+    codecs = _create_codecs(values)
     instance = _create_instance(name=name, values=values)
-    repr_method = _create_repr(fields)
+    repr_method = _create_repr(codecs)
 
     assert repr_method(instance) == expected_repr

@@ -1,24 +1,41 @@
-from typing import Dict
+from dataclasses import dataclass
+from typing import Dict, Generic, TypeVar
 
-from structure.data_types.base_data_type import BaseDataType
-from structure._structure.types import Fields
+from structure._structure.types import Codecs
+from structure.codecs.base_codec import BaseCodec
+from structure.field import Field
 
-Values = Dict[str, BaseDataType]
+T = TypeVar("T")
 
 
-def _create_fields(values: Values) -> Fields:
-    return {name: field._codec for name, field in values.items()}
+@dataclass
+class Value(Generic[T]):
+    value: T
+    codec: BaseCodec
+
+
+Values = Dict[str, Value]
+
+
+def _create_codecs(values: Values) -> Codecs:
+    return {name: field.codec for name, field in values.items()}
 
 
 def _create_instance(values: Values, name: str = "") -> object:
     instance = _create_type(values=values, name=name)()
     instance.__class__.__name__ = name
 
+    for name, value in values.items():
+        setattr(instance, name, value.value)
+
     return instance
 
 
 def _create_type(values: Values, name: str = "") -> type:
-    return type(name, tuple(), values)
+    fields = {
+        name: Field(codec=value.codec, name=name) for name, value in values.items()
+    }
+    return type(name, tuple(), fields)
 
 
 def _create_empty_instance(name: str = "") -> object:

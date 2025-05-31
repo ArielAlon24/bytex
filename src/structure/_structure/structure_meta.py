@@ -1,7 +1,7 @@
 from typing import Callable, Dict, get_origin, get_args, Annotated
 
 from structure.codecs.base_codec import BaseCodec
-from structure._structure.types import Fields
+from structure._structure.types import Codecs
 from structure._structure.method_creators import (
     _create_init,
     _create_repr,
@@ -10,7 +10,7 @@ from structure._structure.method_creators import (
 )
 
 ANNOTATIONS_KEY: str = "__annotations__"
-METHOD_CREATORS: Dict[str, Callable[[Fields], Callable]] = {
+METHOD_CREATORS: Dict[str, Callable[[Codecs], Callable]] = {
     "__init__": _create_init,
     "__repr__": _create_repr,
     "dump": _create_dump,
@@ -29,8 +29,8 @@ class StructureMeta(type):
         return super().__new__(mcs, name, bases, namespace)
 
 
-def _construct_fields(annotations: Dict[str, type]) -> Fields:
-    fields: Fields = {}
+def _construct_fields(annotations: Dict[str, type]) -> Codecs:
+    fields: Codecs = {}
 
     for field_name, annotated_type in annotations.items():
         origin = get_origin(annotated_type)
