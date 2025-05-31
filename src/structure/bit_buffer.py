@@ -14,9 +14,6 @@ class BitBuffer:
     def write(self, bits: Bits) -> None:
         self._bits.extend(bits)
 
-    def __len__(self) -> int:
-        return len(self._bits)
-
     def read(self, count: int) -> Bits:
         if count > len(self._bits):
             raise InsufficientDataError(
@@ -25,6 +22,9 @@ class BitBuffer:
         result = self._bits[:count]
         self._bits = self._bits[count:]
         return result
+
+    def to_bits(self) -> Bits:
+        return self._bits
 
     def to_bytes(self, endianes: Endianes) -> bytes:
         if len(self._bits) % 8 != 0:
@@ -63,3 +63,6 @@ class BitBuffer:
                 buffer._bits.append(bool(bit))
 
         return buffer
+
+    def __len__(self) -> int:
+        return len(self._bits)

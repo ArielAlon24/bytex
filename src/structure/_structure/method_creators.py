@@ -1,8 +1,8 @@
-from typing import Any, Callable, Dict, Set, Type
-from typing_extensions import ParamSpec, ParamSpecKwargs
+from typing import Any, Callable, Set
 
 from structure._structure.types import Codecs
-from structure.bit_buffer import BitBuffer
+from structure._structure._structure import _Structure
+from structure.bit_buffer import BitBuffer, Bits
 from structure.endianes import Endianes
 from structure.errors import (
     AlignmentError,
@@ -13,7 +13,7 @@ from structure.errors import (
 from structure.field import Field
 
 
-def _create_init(codecs: Codecs) -> Callable[[object], None]:
+def _create_init(codecs: Codecs) -> Callable[..., None]:
     def __init__(self: object, **data: Any) -> None:
         _validate_keys(expected_keys=set(codecs.keys()), actual_keys=set(data.keys()))
 
@@ -74,7 +74,7 @@ def _create_repr(codecs: Codecs) -> Callable[[object], str]:
 
 def _create_dump(codecs: Codecs) -> Callable[[object, Endianes], bytes]:
     def dump(self, endianes: Endianes = Endianes.LITTLE) -> bytes:
-        if sum(field.bit_remainder() for field in codecs.values()) % 8 != 0:
+        if sum(codec.bit_remainder() for codec in codecs.values()) % 8 != 0:
             raise AlignmentError(
                 "Cannot dump a structure whose bit size is not a multiple of 8"
             )
@@ -89,7 +89,20 @@ def _create_dump(codecs: Codecs) -> Callable[[object, Endianes], bytes]:
     return dump
 
 
-def _create_parse(codecs: Codecs) -> Callable[[type, bytes, Endianes], object]:
+def _create_dump_bits(codecs: Codecs) -> Callable[[object], Bits]:
+    def dump_bits(self) -> Bits:
+        buffer = BitBuffer()
+
+        for name, codec in codecs.items():
+            value = getattr(self, name)
+            buffer.write(codec.serialize(value))
+
+        return buffer.to_bits()
+
+    return dump_bits
+
+
+def _create_parse(codecs: Codecs) -> Callable[[object, bytes, Endianes, bool], object]:
     @classmethod
     def parse(
         cls, data: bytes, endianes: Endianes = Endianes.LITTLE, strict: bool = False
@@ -111,3 +124,47 @@ def _create_parse(codecs: Codecs) -> Callable[[type, bytes, Endianes], object]:
         return cls(**values)
 
     return parse
+
+
+def _create_parse_bits(
+    codecs: Codecs,
+) -> Callable[[object, BitBuffer, bool], object]:
+    @classmethod
+    def parse_bits(
+        cls,
+        buffer: BitBuffer,
+        strict: bool = False,
+    ) -> object:
+        values = {}
+
+        for name, codec in codecs.items():
+            try:
+                values[name] = codec.deserialize(buffer)
+            except StructureError as e:
+                raise ParsingError(
+                    f"Insufficient data while parsing field '{name}'"
+                ) from e
+
+        if strict and len(buffer):
+            raise ParsingError(f"Unexpected trailing data: {len(buffer)} bits left")
+
+        return cls(**values)
+
+    return parse_bits
+
+
+def _create_validate(codecs: Codecs) -> Callable[[object], None]:
+    def validate(self) -> None:
+        for name, codec in codecs.items():
+            value = getattr(self, name)
+            codec.validate(value)
+
+    return validate
+
+
+def _create_bit_remainder(codecs: Codecs) -> Callable[[object], int]:
+    @classmethod
+    def bit_remainder(cls) -> int:
+        return sum(codec.bit_remainder() for codec in codecs.values())
+
+    return bit_remainder
