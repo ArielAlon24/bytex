@@ -64,9 +64,9 @@ def _construct_codec(annotation: type) -> BaseCodec:
 
     base_type, codec = args
 
-    if base_type != int or not isinstance(codec, BaseCodec):
+    if not isinstance(codec, BaseCodec):
         raise RuntimeError(
-            "All structure fields must be in the form `typing.Annotated[int, Number(...)]`"
+            "All structure fields must be in the form `typing.Annotated[int, BaseCodec(...)]`"
         )
 
     return codec
