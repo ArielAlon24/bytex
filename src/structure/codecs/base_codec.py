@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from structure.bit_buffer import Bits, BitBuffer
+from structure.bits import Bits, BitBuffer
 
 
 T = TypeVar("T")
@@ -19,8 +19,4 @@ class BaseCodec(ABC, Generic[T]):
 
     @abstractmethod
     def validate(self, value: T) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def bit_remainder(self) -> int:
         raise NotImplementedError

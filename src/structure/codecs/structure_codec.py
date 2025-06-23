@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Type
 
 from structure._structure._structure import _Structure
-from structure.bit_buffer import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import ValidationError
 
@@ -24,9 +24,6 @@ class StructureCodec(BaseCodec[_Structure]):
             )
 
         value.validate()
-
-    def bit_remainder(self) -> int:
-        return self.structure_class.bit_remainder()
 
     def __repr__(self) -> str:
         return "Structure"

@@ -1,10 +1,8 @@
 from __future__ import annotations
-from typing import List
-from typing_extensions import TypeAlias
+
 from structure.endianes import Endianes
 from structure.errors import AlignmentError, InsufficientDataError
-
-Bits: TypeAlias = List[bool]
+from structure.bits.types import Bits
 
 
 class BitBuffer:

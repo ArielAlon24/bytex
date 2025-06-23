@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 from typing_extensions import Self
 from structure.endianes import Endianes
-from structure.bit_buffer import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits
 
 
 class _Structure:
@@ -27,10 +27,6 @@ class _Structure:
         raise NotImplementedError
 
     def validate(self) -> None:
-        raise NotImplementedError
-
-    @classmethod
-    def bit_remainder(cls) -> int:
         raise NotImplementedError
 
     def __len__(self) -> int:

@@ -1,8 +1,15 @@
 from typing import Annotated
 
-from structure.codecs.terminated_string_codec import TerminatedStringCodec
+from structure.bits import to_bits
 from structure.sign import Sign
-from structure.codecs import IntegerCodec, FlagCodec
+from structure.codecs import (
+    IntegerCodec,
+    FlagCodec,
+    BitsTerminatedSequenceCodec,
+    ValueTerminatedSequenceCodec,
+    CharCodec,
+    DataCodec,
+)
 
 
 U1 = Annotated[int, IntegerCodec(bit_count=1, sign=Sign.UNSIGNED)]
@@ -28,5 +35,20 @@ I128 = Annotated[int, IntegerCodec(bit_count=128, sign=Sign.SIGNED)]
 I256 = Annotated[int, IntegerCodec(bit_count=256, sign=Sign.SIGNED)]
 
 Flag = Annotated[bool, FlagCodec()]
+Data = Annotated[bytes, DataCodec()]
 
-CString = Annotated[str, TerminatedStringCodec(terminator="\x00")]
+CString = Annotated[
+    str,
+    ValueTerminatedSequenceCodec(
+        item_codec=CharCodec(),
+        terminator="\x00",
+    ),
+]
+
+CByteString = Annotated[
+    bytes,
+    BitsTerminatedSequenceCodec(
+        item_codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED),
+        terminator=to_bits(b"\x00"),
+    ),
+]

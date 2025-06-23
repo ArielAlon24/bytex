@@ -10,7 +10,6 @@ from structure._structure.method_creators import (
     _create_parse,
     _create_parse_bits,
     _create_validate,
-    _create_bit_remainder,
     _create_repr,
 )
 
@@ -22,7 +21,6 @@ METHOD_CREATORS: Dict[str, Callable[[Codecs], Callable]] = {
     "parse": _create_parse,
     "parse_bits": _create_parse_bits,
     "validate": _create_validate,
-    "bit_remainder": _create_bit_remainder,
     "__repr__": _create_repr,
 }
 

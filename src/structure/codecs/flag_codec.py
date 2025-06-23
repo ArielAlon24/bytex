@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from structure.bit_buffer import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import ValidationError
 
@@ -18,9 +18,6 @@ class FlagCodec(BaseCodec[bool]):
 
     def deserialize(self, bit_buffer: BitBuffer) -> bool:
         return bit_buffer.read(1)[0]
-
-    def bit_remainder(self) -> int:
-        return 1
 
     def __repr__(self) -> str:
         return f"Flag"

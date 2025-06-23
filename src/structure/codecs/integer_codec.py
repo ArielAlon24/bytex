@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from structure.bit_buffer import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits
 from structure.codecs.base_codec import BaseCodec
 from structure.sign import Sign
 from structure.errors import ValidationError
@@ -61,9 +61,6 @@ class IntegerCodec(BaseCodec[int]):
                 value -= 1 << self.bit_count
 
         return value
-
-    def bit_remainder(self) -> int:
-        return self.bit_count % 8
 
     def __repr__(self) -> str:
         return f"{self.sign.value}{self.bit_count}"
