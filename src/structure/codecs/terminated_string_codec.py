@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from structure.bit_buffer import BitBuffer, Bits
 from structure.codecs.base_codec import BaseCodec
 from structure.codecs.integer_codec import IntegerCodec
+from structure.errors import ValidationError
 from structure.sign import Sign
 
 
@@ -42,8 +43,13 @@ class TerminatedStringCodec(BaseCodec[str]):
                 return "".join(map(chr, buffer[:-terminator_length]))
 
     def validate(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise ValidationError(
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
+            )
+
         if self.terminator in value:
-            raise ValueError(
+            raise ValidationError(
                 f"Input string must not contain the terminator sequence {repr(self.terminator)}"
             )
 

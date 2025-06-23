@@ -18,6 +18,11 @@ class IntegerCodec(BaseCodec[int]):
             )
 
     def validate(self, value: int) -> None:
+        if not isinstance(value, int):
+            raise ValidationError(
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(int)}'"
+            )
+
         if self.sign == Sign.SIGNED:
             minimum = -(1 << (self.bit_count - 1))
             maximum = (1 << (self.bit_count - 1)) - 1

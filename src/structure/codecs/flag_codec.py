@@ -2,12 +2,16 @@ from dataclasses import dataclass
 
 from structure.bit_buffer import BitBuffer, Bits
 from structure.codecs.base_codec import BaseCodec
+from structure.errors import ValidationError
 
 
 @dataclass(frozen=True)
 class FlagCodec(BaseCodec[bool]):
     def validate(self, value: bool) -> None:
-        pass
+        if not isinstance(value, bool):
+            raise ValidationError(
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(bool)}'"
+            )
 
     def serialize(self, value: bool) -> Bits:
         return [value]
