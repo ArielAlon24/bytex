@@ -2,6 +2,10 @@ class StructureError(Exception):
     pass
 
 
+class StructureCreationError(Exception):
+    pass
+
+
 class ValidationError(StructureError):
     pass
 

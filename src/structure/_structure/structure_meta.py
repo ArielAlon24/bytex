@@ -1,6 +1,6 @@
 from typing import Callable, Dict, get_origin, get_args, Annotated
 
-from structure.codecs import BaseCodec, StructureCodec
+from structure.codecs import BaseCodec, StructureCodec, DataCodec
 from structure._structure._structure import _Structure
 from structure._structure.types import Codecs
 from structure._structure.method_creators import (
@@ -12,6 +12,7 @@ from structure._structure.method_creators import (
     _create_validate,
     _create_repr,
 )
+from structure.errors import StructureCreationError
 
 ANNOTATIONS_KEY: str = "__annotations__"
 METHOD_CREATORS: Dict[str, Callable[[Codecs], Callable]] = {
@@ -28,10 +29,11 @@ METHOD_CREATORS: Dict[str, Callable[[Codecs], Callable]] = {
 class StructureMeta(type):
     def __new__(mcs, name, bases, namespace):
         annotations = namespace.get(ANNOTATIONS_KEY, {})
-        fields = _construct_codecs(annotations)
+        codecs = _construct_codecs(annotations)
+        _validate_codecs(codecs)
 
         for method_name, method_creator in METHOD_CREATORS.items():
-            namespace[method_name] = method_creator(fields)
+            namespace[method_name] = method_creator(codecs)
 
         return super().__new__(mcs, name, bases, namespace)
 
@@ -53,18 +55,31 @@ def _construct_codec(annotation: type) -> BaseCodec:
     args = get_args(annotation)
 
     if origin is not Annotated:
-        raise RuntimeError("All structure fields must be `typing.Annotated`")
+        raise StructureCreationError(
+            "All structure fields must be of type `typing.Annotated`"
+        )
 
     if len(args) != 2:
-        raise RuntimeError(
-            "All Structure fields must be of the form `typing.Annotated[<base_type>, <structure_class_instance>]`"
+        raise StructureCreationError(
+            "All Structure fields must be of the form `typing.Annotated[Any, BaseCodec(...)]`"
         )
 
     base_type, codec = args
 
     if not isinstance(codec, BaseCodec):
-        raise RuntimeError(
-            "All structure fields must be in the form `typing.Annotated[int, BaseCodec(...)]`"
+        raise StructureCreationError(
+            "All structure fields must be in the form `typing.Annotated[Any, BaseCodec(...)]`"
         )
 
     return codec
+
+
+def _validate_codecs(codecs: Codecs) -> None:
+    if len(codecs) == 0:
+        return
+
+    for codec, _ in zip(codecs.values(), range(0, len(codecs) - 1)):
+        if isinstance(codec, DataCodec):
+            raise StructureCreationError(
+                f"A field with codec `{DataCodec.__name__}` must singular and come last"
+            )
