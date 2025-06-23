@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from structure.sign import Sign
-from structure.codecs import IntegerCodec
+from structure.codecs import IntegerCodec, FlagCodec
 
 
 U1 = Annotated[int, IntegerCodec(bit_count=1, sign=Sign.UNSIGNED)]
@@ -25,3 +25,5 @@ I32 = Annotated[int, IntegerCodec(bit_count=32, sign=Sign.SIGNED)]
 I64 = Annotated[int, IntegerCodec(bit_count=64, sign=Sign.SIGNED)]
 I128 = Annotated[int, IntegerCodec(bit_count=128, sign=Sign.SIGNED)]
 I256 = Annotated[int, IntegerCodec(bit_count=256, sign=Sign.SIGNED)]
+
+Flag = Annotated[bool, FlagCodec()]
