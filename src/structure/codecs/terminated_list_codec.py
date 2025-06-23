@@ -9,7 +9,7 @@ T = TypeVar("T")
 
 
 @dataclass(frozen=True)
-class BitsTerminatedSequenceCodec(BaseCodec[Sequence[T]], Generic[T]):
+class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
     item_codec: BaseCodec[T]
     terminator: Bits
 
@@ -25,29 +25,18 @@ class BitsTerminatedSequenceCodec(BaseCodec[Sequence[T]], Generic[T]):
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> List[T]:
-        result: List[T] = []
-        recent_bits: Bits = []
-        terminator_len = len(self.terminator)
+    def deserialize(self, bit_buffer: BitBuffer) -> Sequence[T]:
+        items = []
 
-        buffer_snapshot = BitBuffer()
-        buffer_snapshot.write(bit_buffer.to_bits())
+        while True:
+            peeked_data = bit_buffer.peek(len(self.terminator))
+            if peeked_data == self.terminator:
+                bit_buffer.read(len(self.terminator))
+                break
 
-        while len(buffer_snapshot) >= terminator_len:
-            item = self.item_codec.deserialize(buffer_snapshot)
-            item_bits = self.item_codec.serialize(item)
+            items.append(self.item_codec.deserialize(bit_buffer))
 
-            recent_bits.extend(item_bits)
-            if len(recent_bits) > terminator_len:
-                # Trim from the front
-                recent_bits = recent_bits[-(terminator_len + len(item_bits)) :]
-
-            result.append(item)
-
-            if recent_bits[-terminator_len:] == self.terminator:
-                return result[:-1] if len(self.terminator) > 0 else result
-
-        raise ValidationError("Terminator not found before buffer ended.")
+        return items
 
     def validate(self, value: Sequence[T]) -> None:
         if not isinstance(value, Sequence):
