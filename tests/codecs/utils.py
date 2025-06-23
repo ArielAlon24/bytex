@@ -1,4 +1,4 @@
-from structure.bit_buffer import Bits
+from structure.bits import Bits
 
 
 def bits_to_string(bits: Bits) -> str:

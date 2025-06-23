@@ -1,6 +1,6 @@
 import pytest
 
-from structure.bit_buffer import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits
 from structure.endianes import Endianes
 from structure.errors import AlignmentError, InsufficientDataError
 

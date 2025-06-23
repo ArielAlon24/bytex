@@ -1,5 +1,6 @@
 import pytest
-from structure import IntegerCodec, Sign, BitBuffer
+from structure import Sign, BitBuffer
+from structure.codecs import IntegerCodec
 from structure.errors import ValidationError
 
 

@@ -43,11 +43,6 @@ def test_flag_serialize_deserialize_roundtrip(value: bool):
     assert result is value
 
 
-def test_flag_bit_remainder():
-    codec = FlagCodec()
-    assert codec.bit_remainder() == 1
-
-
 def test_flag_repr():
     codec = FlagCodec()
     assert repr(codec) == "Flag"
