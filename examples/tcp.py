@@ -33,10 +33,10 @@ class TCP(Structure):
 
 
 def tcp_packet_handler(packet: scapy.Packet) -> None:
-    data = packet[scapy.TCP].build()
+    data = packet[scapy.TCP].build()  # type: ignore
 
     tcp = TCP.parse(data, endianes=Endianes.BIG)
-    scapy_tcp = packet[scapy.TCP]
+    scapy_tcp = packet[scapy.TCP]  # type: ignore
 
     assert tcp.source_port == scapy_tcp.sport
     assert tcp.dest_port == scapy_tcp.dport
