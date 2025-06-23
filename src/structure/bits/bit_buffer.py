@@ -21,6 +21,14 @@ class BitBuffer:
         self._bits = self._bits[count:]
         return result
 
+    def peek(self, count: int) -> Bits:
+        if count > len(self._bits):
+            raise InsufficientDataError(
+                f"Cannot read {count} bits, only {len(self._bits)} available"
+            )
+
+        return self._bits[:count]
+
     def to_bits(self) -> Bits:
         return self._bits
 

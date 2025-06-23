@@ -1,15 +1,18 @@
-from typing import Annotated
+from typing import Annotated, Type, Union
 
 from structure.bits import to_bits
 from structure.sign import Sign
 from structure.codecs import (
     IntegerCodec,
     FlagCodec,
-    BitsTerminatedSequenceCodec,
-    ValueTerminatedSequenceCodec,
+    TerminatedListCodec,
+    TerminatedBytesCodec,
+    TerminatedStringCodec,
+    StructureCodec,
     CharCodec,
     DataCodec,
 )
+from structure._structure.structure import Structure
 
 
 U1 = Annotated[int, IntegerCodec(bit_count=1, sign=Sign.UNSIGNED)]
@@ -34,21 +37,29 @@ I64 = Annotated[int, IntegerCodec(bit_count=64, sign=Sign.SIGNED)]
 I128 = Annotated[int, IntegerCodec(bit_count=128, sign=Sign.SIGNED)]
 I256 = Annotated[int, IntegerCodec(bit_count=256, sign=Sign.SIGNED)]
 
+Char = Annotated[str, CharCodec()]
 Flag = Annotated[bool, FlagCodec()]
 Data = Annotated[bytes, DataCodec()]
+CStr = Annotated[str, TerminatedStringCodec(terminator=to_bits("\x00"))]
+ByteCStr = Annotated[bytes, TerminatedBytesCodec(terminator=to_bits(b"\x00"))]
 
-CString = Annotated[
-    str,
-    ValueTerminatedSequenceCodec(
-        item_codec=CharCodec(),
-        terminator="\x00",
-    ),
-]
 
-CByteString = Annotated[
-    bytes,
-    BitsTerminatedSequenceCodec(
-        item_codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED),
-        terminator=to_bits(b"\x00"),
-    ),
-]
+def string(terminator: Union[str, bytes]) -> TerminatedStringCodec:
+    return TerminatedStringCodec(terminator=to_bits(terminator))
+
+
+def buffer(terminator: bytes) -> TerminatedBytesCodec:
+    return TerminatedBytesCodec(terminator=to_bits(terminator))
+
+
+def vector(
+    structure_type: Type[Structure], terminator: Union[str, bytes, Structure]
+) -> TerminatedListCodec:
+    if isinstance(terminator, Structure):
+        return TerminatedListCodec(
+            item_codec=StructureCodec(structure_type),
+            terminator=terminator.dump_bits(),
+        )
+    return TerminatedListCodec(
+        item_codec=StructureCodec(structure_type), terminator=to_bits(terminator)
+    )
