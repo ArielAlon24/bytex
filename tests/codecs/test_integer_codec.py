@@ -54,19 +54,15 @@ def test_validate_failure(number: IntegerCodec, value: int):
 @pytest.mark.parametrize(
     "bit_count, sign, value, expected_bits",
     [
-        # Unsigned 4-bit
         (4, Sign.UNSIGNED, 0, [False, False, False, False]),
         (4, Sign.UNSIGNED, 5, [False, True, False, True]),
         (4, Sign.UNSIGNED, 15, [True, True, True, True]),
-        # Signed 4-bit
         (4, Sign.SIGNED, 0, [False, False, False, False]),
         (4, Sign.SIGNED, 7, [False, True, True, True]),
         (4, Sign.SIGNED, -1, [True, True, True, True]),
         (4, Sign.SIGNED, -8, [True, False, False, False]),
-        # Unsigned 8-bit
         (8, Sign.UNSIGNED, 255, [True] * 8),
         (8, Sign.UNSIGNED, 1, [False] * 7 + [True]),
-        # Signed 8-bit
         (8, Sign.SIGNED, -128, [True] + [False] * 7),
         (8, Sign.SIGNED, 127, [False] + [True] * 7),
     ],
@@ -80,18 +76,14 @@ def test_serialize(bit_count, sign, value, expected_bits):
 @pytest.mark.parametrize(
     "bit_count, sign, bits, expected_value",
     [
-        # Unsigned 4-bit
         (4, Sign.UNSIGNED, [False, False, False, False], 0),
         (4, Sign.UNSIGNED, [True, False, True, True], 11),
         (4, Sign.UNSIGNED, [True, True, True, True], 15),
-        # Signed 4-bit
         (4, Sign.SIGNED, [True, False, False, False], -8),
         (4, Sign.SIGNED, [True, True, True, True], -1),
         (4, Sign.SIGNED, [False, True, True, True], 7),
-        # Unsigned 8-bit
         (8, Sign.UNSIGNED, [False] * 7 + [True], 1),
         (8, Sign.UNSIGNED, [True] * 8, 255),
-        # Signed 8-bit
         (8, Sign.SIGNED, [True] + [False] * 7, -128),
         (8, Sign.SIGNED, [False] + [True] * 7, 127),
     ],
