@@ -1,18 +1,18 @@
 from scapy import all as scapy
 
 from structure import Structure, Endianes
-from structure.types import U1, U3, U4, U16, U32
+from structure.types import U3, U4, U16, U32, Flag
 
 
 class TCPFlags(Structure):
-    cwr: U1
-    ece: U1
-    urg: U1
-    ack: U1
-    psh: U1
-    rst: U1
-    syn: U1
-    fin: U1
+    cwr: Flag
+    ece: Flag
+    urg: Flag
+    ack: Flag
+    psh: Flag
+    rst: Flag
+    syn: Flag
+    fin: Flag
 
 
 class TCP(Structure):
@@ -23,7 +23,7 @@ class TCP(Structure):
 
     data_offset: U4
     reserved: U3
-    ns_flag: U1
+    ns_flag: Flag
 
     flags: TCPFlags
 
