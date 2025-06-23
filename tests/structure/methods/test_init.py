@@ -37,7 +37,7 @@ def test_create_init_success(
 ):
     instance = _create_empty_instance(name)
     init_method = _create_init(codecs)
-    init_method(instance, **input_data)  # type: ignore
+    init_method(instance, **input_data)
 
     for key, expected_value in input_data.items():
         assert getattr(instance, key) == expected_value
@@ -80,6 +80,6 @@ def test_init_failure(codecs: Codecs, actual: Dict[str, Any], expected_message: 
     init_method = _create_init(codecs)
 
     with pytest.raises(ValidationError) as exc_info:
-        init_method(instance, **actual)  # type: ignore
+        init_method(instance, **actual)
 
     assert expected_message == str(exc_info.value)
