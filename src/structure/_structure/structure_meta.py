@@ -12,6 +12,7 @@ from structure._structure.method_creators import (
     _create_validate,
     _create_repr,
 )
+from structure.codecs.prefix_bytes_codec import PrefixBytesCodec
 from structure.errors import StructureCreationError
 from structure.length_encodings import (
     BaseLengthEncoding,
@@ -149,6 +150,8 @@ def _construct_bytes_length_encoded_codec(
         return FixedBytesCodec(length=length_encoding.length)
     if isinstance(length_encoding, Exact):
         return ExactBytesCodec(length=length_encoding.length)
+    if isinstance(length_encoding, Prefix):
+        return PrefixBytesCodec(integer_codec=length_encoding.codec)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `bytes`"
     )

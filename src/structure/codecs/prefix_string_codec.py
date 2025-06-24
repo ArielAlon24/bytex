@@ -8,7 +8,6 @@ from structure.errors import ValidationError
 
 
 CHAR_CODEC = CharCodec()
-EMPTY_CHAR = CHAR_CODEC.serialize("\0")
 
 
 @dataclass(frozen=True)
