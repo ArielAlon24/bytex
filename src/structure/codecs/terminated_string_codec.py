@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from structure.bits import BitBuffer, Bits, from_bits
+from structure.bits.utils import is_subsequence, to_bits
 from structure.codecs.base_codec import BaseCodec
 from structure.codecs.char_codec import CharCodec
 from structure.errors import ValidationError
@@ -40,6 +41,14 @@ class TerminatedStringCodec(BaseCodec[str]):
         if not isinstance(value, str):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
+            )
+
+        bits = to_bits(value)
+
+        if is_subsequence(self.terminator, bits):
+            raise ValidationError(
+                f"Invalid value, a {self.__class__.__name__}'s value cannot contain it's own "
+                f"terminator - {from_bits(self.terminator)}"
             )
 
     def bit_remainder(self) -> int:
