@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Generic, List, TypeVar, Sequence
+from typing import Generic, TypeVar, Sequence
 
-from structure.bits import BitBuffer, Bits
+from structure.bits import BitBuffer, Bits, from_bits
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import ValidationError
 
@@ -48,4 +48,4 @@ class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
         return 0
 
     def __repr__(self) -> str:
-        return f"TerminatedSequence(terminator=<{len(self.terminator)} bits>, item_codec={self.item_codec})"
+        return f"TerminatedList({repr(from_bits(self.terminator))}, item_codec={self.item_codec})"
