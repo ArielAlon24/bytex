@@ -1,7 +1,6 @@
 from typing import Callable, Dict, List, Optional, get_origin, get_args, Annotated
 import collections.abc
 
-from structure.codecs import BaseCodec, StructureCodec, DataCodec
 from structure._structure._structure import _Structure
 from structure._structure.types import Codecs
 from structure._structure.method_creators import (
@@ -13,10 +12,17 @@ from structure._structure.method_creators import (
     _create_validate,
     _create_repr,
 )
-from structure.codecs.terminated_list_codec import TerminatedListCodec
 from structure.errors import StructureCreationError
-from structure.length_encodings import Terminator, BaseLengthEncoding
-from structure.codecs import TerminatedStringCodec, TerminatedBytesCodec
+from structure.length_encodings import BaseLengthEncoding, Terminator, Fixed
+from structure.codecs import (
+    BaseCodec,
+    StructureCodec,
+    DataCodec,
+    TerminatedListCodec,
+    TerminatedStringCodec,
+    TerminatedBytesCodec,
+    FixedStringCodec,
+)
 
 
 ANNOTATIONS_KEY: str = "__annotations__"
@@ -110,6 +116,8 @@ def _construct_str_length_encoded_codec(
 ) -> BaseCodec:
     if isinstance(length_encoding, Terminator):
         return TerminatedStringCodec(length_encoding.get_terminator())
+    if isinstance(length_encoding, Fixed):
+        return FixedStringCodec(length=length_encoding.length)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `str`"
     )

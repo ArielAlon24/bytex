@@ -7,3 +7,4 @@ from structure.codecs.terminated_list_codec import TerminatedListCodec
 from structure.codecs.terminated_string_codec import TerminatedStringCodec
 from structure.codecs.terminated_bytes_codec import TerminatedBytesCodec
 from structure.codecs.data_codec import DataCodec
+from structure.codecs.fixed_string_codec import FixedStringCodec
