@@ -165,7 +165,8 @@ def _resolve_list_item_codec(list_item_type: type) -> BaseCodec:
         raise StructureCreationError(
             "Invalid Annotated usage: expected `Annotated[Type, BaseCodec]`"
         )
-    elif issubclass(list_item_type, _Structure):
+
+    if issubclass(list_item_type, _Structure):
         return StructureCodec(structure_class=list_item_type)
 
     raise StructureCreationError(
