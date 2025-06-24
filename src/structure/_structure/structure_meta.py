@@ -16,6 +16,7 @@ from structure.errors import StructureCreationError
 from structure.length_encodings import BaseLengthEncoding, Terminator, Fixed, Exact
 from structure.codecs import (
     BaseCodec,
+    IntegerCodec,
     StructureCodec,
     DataCodec,
     TerminatedListCodec,
@@ -23,6 +24,7 @@ from structure.codecs import (
     TerminatedBytesCodec,
     FixedStringCodec,
     FixedBytesCodec,
+    FixedIntegersCodec,
     ExactStringCodec,
     ExactBytesCodec,
 )
@@ -156,6 +158,10 @@ def _construct_list_length_encoded_codec(
     if isinstance(length_encoding, Terminator):
         return TerminatedListCodec(
             item_codec=item_codec, terminator=length_encoding.get_terminator()
+        )
+    if isinstance(length_encoding, Fixed) and isinstance(item_codec, IntegerCodec):
+        return FixedIntegersCodec(
+            integer_codec=item_codec, length=length_encoding.length
         )
 
     raise StructureCreationError("Unsupported length encoding for `List[...]`.")
