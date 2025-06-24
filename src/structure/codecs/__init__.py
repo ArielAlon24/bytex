@@ -12,3 +12,4 @@ from structure.codecs.fixed_bytes_codec import FixedBytesCodec
 from structure.codecs.fixed_integers_codec import FixedIntegersCodec
 from structure.codecs.exact_bytes_codec import ExactBytesCodec
 from structure.codecs.exact_string_codec import ExactStringCodec
+from structure.codecs.exact_list_codec import ExactListCodec

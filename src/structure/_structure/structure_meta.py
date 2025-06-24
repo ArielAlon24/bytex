@@ -27,6 +27,7 @@ from structure.codecs import (
     FixedIntegersCodec,
     ExactStringCodec,
     ExactBytesCodec,
+    ExactListCodec,
 )
 
 
@@ -163,6 +164,8 @@ def _construct_list_length_encoded_codec(
         return FixedIntegersCodec(
             integer_codec=item_codec, length=length_encoding.length
         )
+    if isinstance(length_encoding, Exact):
+        return ExactListCodec(item_codec=item_codec, length=length_encoding.length)
 
     raise StructureCreationError("Unsupported length encoding for `List[...]`.")
 
