@@ -1,33 +1,34 @@
 from typing import Any, List, Optional, Tuple, get_args, get_origin, Annotated
 import collections.abc
 
-from structure.codecs.base_codec import BaseCodec
 from structure.errors import StructureError
 
 ANNOTATED_ARGS_COUNT: int = 2
 
 
-def extract_type_and_codec(annotation: Any) -> Tuple[Any, BaseCodec]:
+def extract_type_and_value(annotation: Any) -> Tuple[Any, Any]:
+    """
+    Structure heavily uses the following form of types:
+
+        Annotated[<base-type>, <modifier-class>]
+
+    This functions accepts an annotation that should be of this kind and returns
+    the `<base-type>` and `<modifier-class>` as a tuple
+    """
+
     if not get_origin(annotation) is Annotated:
         raise StructureError(
-            "Invalid Annotated usage: expected `Annotated[Type, BaseCodec]`"
+            "Invalid Annotated usage: expected `Annotated[Type, <...>]`"
         )
 
     annotated_args = get_args(annotation)
 
     if len(annotated_args) != ANNOTATED_ARGS_COUNT:
         raise StructureError(
-            "Invalid Annotated usage: expected `Annotated[Type, BaseCodec]`"
+            "Invalid Annotated usage: expected `Annotated[Type, <...>]`"
         )
 
-    base_type, codec = annotated_args
-
-    if not isinstance(codec, BaseCodec):
-        raise StructureError(
-            "Invalid Annotated usage: expected `Annotated[Type, BaseCodec]`"
-        )
-
-    return base_type, codec
+    return annotated_args
 
 
 def is_sequence_type(annotation: type) -> bool:

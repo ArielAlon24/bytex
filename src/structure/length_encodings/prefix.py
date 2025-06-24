@@ -1,6 +1,6 @@
 from typing import Any
 
-from structure.annotations import extract_type_and_codec
+from structure.annotations import extract_type_and_value
 from structure.codecs import IntegerCodec
 from structure.length_encodings.base_length_encoding import BaseLengthEncoding
 from structure.errors import StructureCreationError
@@ -8,7 +8,7 @@ from structure.errors import StructureCreationError
 
 class Prefix(BaseLengthEncoding):
     def __init__(self, size: Any) -> None:
-        base_type, codec = extract_type_and_codec(size)
+        base_type, codec = extract_type_and_value(size)
 
         if not base_type == int or not isinstance(codec, IntegerCodec):
             raise StructureCreationError(

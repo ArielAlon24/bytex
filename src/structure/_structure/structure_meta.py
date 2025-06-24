@@ -1,16 +1,15 @@
-from typing import Callable, Dict, List, Optional, get_origin, get_args, Annotated
-import collections.abc
+from typing import Callable, Dict, get_origin, get_args, Annotated
 
 from structure._structure._structure import _Structure
 from structure.annotations import (
-    extract_type_and_codec,
+    extract_type_and_value,
     get_list_type,
     is_list_type,
     is_sequence_type,
 )
 from structure.structure_enum import _StructureEnum
 from structure._structure.types import Codecs
-from structure._structure.method_creators import (
+from structure._structure.methods import (
     _create_init,
     _create_dump,
     _create_dump_bits,
@@ -19,8 +18,6 @@ from structure._structure.method_creators import (
     _create_validate,
     _create_repr,
 )
-from structure.codecs.prefix_bytes_codec import PrefixBytesCodec
-from structure.codecs.prefix_list_codec import PrefixListCodec
 from structure.errors import StructureCreationError
 from structure.length_encodings import (
     BaseLengthEncoding,
@@ -43,6 +40,8 @@ from structure.codecs import (
     ExactStringCodec,
     ExactBytesCodec,
     ExactListCodec,
+    PrefixBytesCodec,
+    PrefixListCodec,
     PrefixStringCodec,
     EnumCodec,
 )
@@ -201,14 +200,20 @@ def _construct_list_length_encoded_codec(
 
 def _resolve_list_item_codec(list_item_type: type) -> BaseCodec:
     if get_origin(list_item_type) is Annotated:
-        _, codec = extract_type_and_codec(list_item_type)
-        return codec
+        _, modifier = extract_type_and_value(list_item_type)
+
+        if not isinstance(modifier, BaseCodec):
+            raise StructureCreationError(
+                "Invalid Annotated usage: expected `Annotated[type, BaseCodec]`"
+            )
+
+        return modifier
 
     if issubclass(list_item_type, _Structure):
         return StructureCodec(structure_class=list_item_type)
 
     raise StructureCreationError(
-        "List item types must be either a `Structure` subclass or `Annotated[_, BaseCodec]`"
+        "List item types must be either a `Structure` subclass or `Annotated[type, BaseCodec]`"
     )
 
 

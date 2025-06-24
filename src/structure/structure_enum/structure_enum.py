@@ -2,7 +2,7 @@ from enum import Enum, EnumMeta
 from types import MappingProxyType
 from typing import Any, Type
 
-from structure.annotations import extract_type_and_codec
+from structure.annotations import extract_type_and_value
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import (
     StructureEnumCreationError,
@@ -17,10 +17,11 @@ ENUM_VALUE_KEY: str = "value"
 
 
 def StructureEnum(size: Any) -> Type[Enum]:
-    try:
-        _, codec = extract_type_and_codec(annotation=size)
-    except StructureError as e:
-        raise StructureEnumCreationError() from e
+    _, codec = extract_type_and_value(annotation=size)
+    if not isinstance(codec, BaseCodec):
+        raise StructureEnumCreationError(
+            "Invalid Annotated usage: expected `Annotated[type, BaseCodec]`"
+        )
 
     class StructureEnumMeta(EnumMeta):
         def __new__(metacls, clsname, bases, clsdict, **kwargs):
