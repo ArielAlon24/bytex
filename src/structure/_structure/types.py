@@ -1,6 +1,13 @@
-from typing_extensions import TypeAlias
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 from structure.codecs.base_codec import BaseCodec
 
-Codecs: TypeAlias = Dict[str, BaseCodec]
+
+# Use `typing_extensions` only in `TYPE_CHECKING` mode to not require the `typing_extensions` module
+
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
+
+    Codecs: TypeAlias = Dict[str, BaseCodec]
+else:
+    Codecs = Dict[str, BaseCodec]

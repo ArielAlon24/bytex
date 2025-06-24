@@ -1,4 +1,4 @@
-from typing import Annotated, Type, Union
+from typing import Annotated
 
 from structure.bits import to_bits
 from structure.sign import Sign
