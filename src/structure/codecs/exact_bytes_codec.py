@@ -37,8 +37,5 @@ class ExactBytesCodec(BaseCodec[bytes]):
                 f"Invalid value, a {self.__class__.__name__}'s value must be of length `length` - {self.length} characters"
             )
 
-    def bit_remainder(self) -> int:
-        return 0
-
     def __repr__(self) -> str:
         return f"TerminatedBytes({self.length})"

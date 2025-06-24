@@ -51,8 +51,5 @@ class TerminatedStringCodec(BaseCodec[str]):
                 f"terminator - {from_bits(self.terminator)}"
             )
 
-    def bit_remainder(self) -> int:
-        return 0
-
     def __repr__(self) -> str:
         return f"TerminatedString({repr(from_bits(self.terminator))})"
