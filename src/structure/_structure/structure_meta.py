@@ -1,4 +1,4 @@
-from typing import Callable, Dict, get_origin, get_args, Annotated
+from typing import Callable, Dict, Type, get_origin, get_args, Annotated
 
 from structure._structure._structure import _Structure
 from structure.annotations import (
@@ -7,7 +7,7 @@ from structure.annotations import (
     is_list_type,
     is_sequence_type,
 )
-from structure.structure_enum import _StructureEnum
+from structure.structure_enum import _StructureEnum, STRUCTURE_ENUM_CODEC_KEY
 from structure._structure.types import Codecs
 from structure._structure.methods import (
     _create_init,
@@ -18,7 +18,7 @@ from structure._structure.methods import (
     _create_validate,
     _create_repr,
 )
-from structure.errors import StructureCreationError
+from structure.errors import StructureCreationError, StructureEnumCreationError
 from structure.length_encodings import (
     BaseLengthEncoding,
     Terminator,
@@ -84,9 +84,7 @@ def _construct_codec(annotation: type) -> BaseCodec:
     if isinstance(annotation, type) and issubclass(annotation, _Structure):
         return StructureCodec(structure_class=annotation)
     if isinstance(annotation, type) and issubclass(annotation, _StructureEnum):
-        return EnumCodec(
-            enum=annotation, item_codec=annotation.__base__.__dict__["_codec_"]
-        )
+        return _construct_enum_codec(enum=annotation)
 
     origin = get_origin(annotation)
     args = get_args(annotation)
@@ -115,6 +113,16 @@ def _construct_codec(annotation: type) -> BaseCodec:
         "All Structure fields must be of the form `typing.Annotated[Any, BaseCodec(...)]` or "
         "typing.Annotated[Sequence, BaseLengthEncoding(...)]"
     )
+
+
+def _construct_enum_codec(enum: Type[_StructureEnum]) -> EnumCodec:
+    codec = enum.__base__.__dict__.get(STRUCTURE_ENUM_CODEC_KEY, None)
+    if codec is None:
+        raise StructureEnumCreationError(
+            f"Failed to retrieve codec from Enum - '{enum.__name__}'"
+        )
+
+    return EnumCodec(enum=enum, item_codec=codec)
 
 
 def _construct_length_encoded_codec(

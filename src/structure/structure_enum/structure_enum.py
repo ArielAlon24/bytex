@@ -6,13 +6,14 @@ from structure.annotations import extract_type_and_value
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import (
     StructureEnumCreationError,
-    StructureError,
     ValidationError,
 )
-from structure.structure_enum._structure_enum import _StructureEnum
+from structure.structure_enum._structure_enum import (
+    _StructureEnum,
+    STRUCTURE_ENUM_CODEC_KEY,
+)
 
 
-CODEC_KEY: str = "_codec_"
 ENUM_VALUE_KEY: str = "value"
 
 
@@ -37,7 +38,7 @@ def StructureEnum(size: Any) -> Type[Enum]:
     class NewEnum(_StructureEnum, metaclass=StructureEnumMeta):
         pass
 
-    setattr(NewEnum, CODEC_KEY, codec)
+    setattr(NewEnum, STRUCTURE_ENUM_CODEC_KEY, codec)
 
     return NewEnum
 
