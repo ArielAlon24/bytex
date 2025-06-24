@@ -4,27 +4,28 @@ from typing import Annotated, List
 import json
 
 from structure import Structure, Endianes
-from structure.types import Data, string, vector
+from structure.length_encodings import Terminator
+from structure.types import Data
 
 
 class HTTPHeader(Structure):
-    key: Annotated[str, string(terminator=": ")]
-    value: Annotated[str, string(terminator="\r\n")]
+    key: Annotated[str, Terminator(": ")]
+    value: Annotated[str, Terminator("\r\n")]
 
 
 class HTTPRequest(Structure):
-    method: Annotated[str, string(terminator=" ")]
-    path: Annotated[str, string(terminator=" ")]
-    version: Annotated[str, string(terminator="\r\n")]
-    headers: Annotated[List[HTTPHeader], vector(HTTPHeader, terminator="\r\n")]
+    method: Annotated[str, Terminator(" ")]
+    path: Annotated[str, Terminator(" ")]
+    version: Annotated[str, Terminator("\r\n")]
+    headers: Annotated[List[HTTPHeader], Terminator("\r\n")]
     data: Data
 
 
 class HTTPResponse(Structure):
-    version: Annotated[str, string(terminator=" ")]
-    status_code: Annotated[str, string(terminator=" ")]
-    status: Annotated[str, string(terminator="\r\n")]
-    headers: Annotated[List[HTTPHeader], vector(HTTPHeader, terminator="\r\n")]
+    version: Annotated[str, Terminator(" ")]
+    status_code: Annotated[str, Terminator(" ")]
+    status: Annotated[str, Terminator("\r\n")]
+    headers: Annotated[List[HTTPHeader], Terminator("\r\n")]
     data: Data
 
 
