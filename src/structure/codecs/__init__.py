@@ -8,3 +8,4 @@ from structure.codecs.terminated_string_codec import TerminatedStringCodec
 from structure.codecs.terminated_bytes_codec import TerminatedBytesCodec
 from structure.codecs.data_codec import DataCodec
 from structure.codecs.fixed_string_codec import FixedStringCodec
+from structure.codecs.fixed_bytes_codec import FixedBytesCodec

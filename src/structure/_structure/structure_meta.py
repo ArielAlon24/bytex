@@ -22,6 +22,7 @@ from structure.codecs import (
     TerminatedStringCodec,
     TerminatedBytesCodec,
     FixedStringCodec,
+    FixedBytesCodec,
 )
 
 
@@ -128,6 +129,8 @@ def _construct_bytes_length_encoded_codec(
 ) -> BaseCodec:
     if isinstance(length_encoding, Terminator):
         return TerminatedBytesCodec(length_encoding.get_terminator())
+    if isinstance(length_encoding, Fixed):
+        return FixedBytesCodec(length_encoding.length)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `bytes`"
     )
