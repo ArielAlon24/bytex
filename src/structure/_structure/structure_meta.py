@@ -136,7 +136,7 @@ def _construct_str_length_encoded_codec(
     if isinstance(length_encoding, Exact):
         return ExactStringCodec(length=length_encoding.length)
     if isinstance(length_encoding, Prefix):
-        return PrefixStringCodec(integer_codec=length_encoding.codec)
+        return PrefixStringCodec(prefix_codec=length_encoding.codec)
     raise StructureCreationError(
         f"Unsupported length encoding `{length_encoding.__class__.__name__}` for `str`"
     )
@@ -152,7 +152,7 @@ def _construct_bytes_length_encoded_codec(
     if isinstance(length_encoding, Exact):
         return ExactBytesCodec(length=length_encoding.length)
     if isinstance(length_encoding, Prefix):
-        return PrefixBytesCodec(integer_codec=length_encoding.codec)
+        return PrefixBytesCodec(prefix_codec=length_encoding.codec)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `bytes`"
     )

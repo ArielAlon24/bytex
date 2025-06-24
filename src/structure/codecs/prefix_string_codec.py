@@ -12,14 +12,14 @@ CHAR_CODEC = CharCodec()
 
 @dataclass(frozen=True)
 class PrefixStringCodec(BaseCodec[str]):
-    integer_codec: IntegerCodec
+    prefix_codec: IntegerCodec
 
     def serialize(self, value: str) -> Bits:
         bits = []
         length = len(value)
 
-        self.integer_codec.validate(length)
-        bits += self.integer_codec.serialize(length)
+        self.prefix_codec.validate(length)
+        bits += self.prefix_codec.serialize(length)
 
         for char in value:
             bits += CHAR_CODEC.serialize(char)
@@ -27,7 +27,7 @@ class PrefixStringCodec(BaseCodec[str]):
         return bits
 
     def deserialize(self, bit_buffer: BitBuffer) -> str:
-        length = self.integer_codec.deserialize(bit_buffer)
+        length = self.prefix_codec.deserialize(bit_buffer)
 
         return from_bits(bit_buffer.read(8 * length)).decode()
 
@@ -38,4 +38,4 @@ class PrefixStringCodec(BaseCodec[str]):
             )
 
     def __repr__(self) -> str:
-        return f"PrefixString({self.integer_codec})"
+        return f"PrefixString({self.prefix_codec})"

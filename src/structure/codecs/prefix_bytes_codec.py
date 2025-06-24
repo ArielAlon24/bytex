@@ -12,14 +12,14 @@ U8_CODEC = IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
 
 @dataclass(frozen=True)
 class PrefixBytesCodec(BaseCodec[bytes]):
-    integer_codec: IntegerCodec
+    prefix_codec: IntegerCodec
 
     def serialize(self, value: bytes) -> Bits:
         bits = []
         length = len(value)
 
-        self.integer_codec.validate(length)
-        bits += self.integer_codec.serialize(length)
+        self.prefix_codec.validate(length)
+        bits += self.prefix_codec.serialize(length)
 
         for num in value:
             bits += U8_CODEC.serialize(num)
@@ -27,7 +27,7 @@ class PrefixBytesCodec(BaseCodec[bytes]):
         return bits
 
     def deserialize(self, bit_buffer: BitBuffer) -> bytes:
-        length = self.integer_codec.deserialize(bit_buffer)
+        length = self.prefix_codec.deserialize(bit_buffer)
 
         return from_bits(bit_buffer.read(8 * length))
 
@@ -38,4 +38,4 @@ class PrefixBytesCodec(BaseCodec[bytes]):
             )
 
     def __repr__(self) -> str:
-        return f"PrefixBytes({self.integer_codec})"
+        return f"PrefixBytes({self.prefix_codec})"
