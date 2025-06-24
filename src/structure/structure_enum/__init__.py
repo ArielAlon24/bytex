@@ -1,0 +1,2 @@
+from structure.structure_enum._structure_enum import _StructureEnum
+from structure.structure_enum.structure_enum import StructureEnum

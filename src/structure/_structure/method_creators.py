@@ -110,12 +110,7 @@ def _create_parse(codecs: Codecs) -> Callable[[object, bytes, Endianes, bool], o
         values = {}
 
         for name, codec in codecs.items():
-            try:
-                values[name] = codec.deserialize(buffer)
-            except StructureError as e:
-                raise ParsingError(
-                    f"Insufficient data while parsing field '{name}'"
-                ) from e
+            values[name] = codec.deserialize(buffer)
 
         if strict and len(buffer):
             raise ParsingError(f"Unexpected trailing data: {len(buffer)} bits left")

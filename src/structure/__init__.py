@@ -1,4 +1,5 @@
 from structure._structure import Structure
+from structure.structure_enum.structure_enum import StructureEnum
 
 from structure.sign import Sign
 from structure.endianes import Endianes

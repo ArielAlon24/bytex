@@ -5,3 +5,6 @@ venv/
 src/structure.egg-info
 
 playground
+
+# VSCode
+.vscode/

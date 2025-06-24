@@ -2,6 +2,7 @@ from typing import Callable, Dict, List, Optional, get_origin, get_args, Annotat
 import collections.abc
 
 from structure._structure._structure import _Structure
+from structure.structure_enum import _StructureEnum
 from structure._structure.types import Codecs
 from structure._structure.method_creators import (
     _create_init,
@@ -37,6 +38,7 @@ from structure.codecs import (
     ExactBytesCodec,
     ExactListCodec,
     PrefixStringCodec,
+    EnumCodec,
 )
 
 
@@ -76,6 +78,10 @@ def _construct_codecs(annotations: Dict[str, type]) -> Codecs:
 def _construct_codec(annotation: type) -> BaseCodec:
     if isinstance(annotation, type) and issubclass(annotation, _Structure):
         return StructureCodec(structure_class=annotation)
+    if isinstance(annotation, type) and issubclass(annotation, _StructureEnum):
+        return EnumCodec(
+            enum=annotation, item_codec=annotation.__base__.__dict__["_codec_"]
+        )
 
     origin = get_origin(annotation)
     args = get_args(annotation)

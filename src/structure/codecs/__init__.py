@@ -16,3 +16,4 @@ from structure.codecs.exact_list_codec import ExactListCodec
 from structure.codecs.prefix_string_codec import PrefixStringCodec
 from structure.codecs.prefix_bytes_codec import PrefixBytesCodec
 from structure.codecs.prefix_list_codec import PrefixListCodec
+from structure.codecs.enum_codec import EnumCodec

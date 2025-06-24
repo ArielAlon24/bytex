@@ -6,6 +6,10 @@ class StructureCreationError(Exception):
     pass
 
 
+class StructureEnumCreationError(StructureCreationError):
+    pass
+
+
 class ValidationError(StructureError):
     pass
 
@@ -14,11 +18,11 @@ class AlignmentError(StructureError):
     pass
 
 
-class InsufficientDataError(StructureError):
+class ParsingError(StructureError):
     pass
 
 
-class ParsingError(StructureError):
+class InsufficientDataError(ParsingError):
     pass
 
 
