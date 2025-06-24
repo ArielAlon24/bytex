@@ -2,6 +2,12 @@ from typing import Callable, Dict, List, Optional, get_origin, get_args, Annotat
 import collections.abc
 
 from structure._structure._structure import _Structure
+from structure.annotations import (
+    extract_type_and_codec,
+    get_list_type,
+    is_list_type,
+    is_sequence_type,
+)
 from structure.structure_enum import _StructureEnum
 from structure._structure.types import Codecs
 from structure._structure.method_creators import (
@@ -115,7 +121,7 @@ def _construct_codec(annotation: type) -> BaseCodec:
 def _construct_length_encoded_codec(
     base_type: type, length_encoding: BaseLengthEncoding
 ) -> BaseCodec:
-    if not _is_sequence_type(base_type):
+    if not is_sequence_type(base_type):
         raise StructureCreationError(
             f"Only `Sequence` types can have a length encoding, got: `{str(base_type)}`"
         )
@@ -124,7 +130,7 @@ def _construct_length_encoded_codec(
         return _construct_str_length_encoded_codec(length_encoding)
     elif base_type == bytes:
         return _construct_bytes_length_encoded_codec(length_encoding)
-    elif _is_list_type(base_type):
+    elif is_list_type(base_type):
         return _construct_list_length_encoded_codec(base_type, length_encoding)
 
     raise StructureCreationError(
@@ -167,7 +173,7 @@ def _construct_bytes_length_encoded_codec(
 def _construct_list_length_encoded_codec(
     base_type: type, length_encoding: BaseLengthEncoding
 ) -> BaseCodec:
-    list_item_type = _get_list_type(base_type)
+    list_item_type = get_list_type(base_type)
     if list_item_type is None:
         raise StructureCreationError(
             "All list types must include the item type - `List[ItemType]`, got a list without an item type"
@@ -195,14 +201,8 @@ def _construct_list_length_encoded_codec(
 
 def _resolve_list_item_codec(list_item_type: type) -> BaseCodec:
     if get_origin(list_item_type) is Annotated:
-        annotated_args = get_args(list_item_type)
-
-        if len(annotated_args) >= 2 and isinstance(annotated_args[1], BaseCodec):
-            return annotated_args[1]
-
-        raise StructureCreationError(
-            "Invalid Annotated usage: expected `Annotated[Type, BaseCodec]`"
-        )
+        _, codec = extract_type_and_codec(list_item_type)
+        return codec
 
     if issubclass(list_item_type, _Structure):
         return StructureCodec(structure_class=list_item_type)
@@ -210,25 +210,6 @@ def _resolve_list_item_codec(list_item_type: type) -> BaseCodec:
     raise StructureCreationError(
         "List item types must be either a `Structure` subclass or `Annotated[_, BaseCodec]`"
     )
-
-
-def _is_sequence_type(annotation: type) -> bool:
-    origin = get_origin(annotation)
-    if origin is None:
-        return issubclass(annotation, collections.abc.Sequence)
-    return issubclass(origin, collections.abc.Sequence)
-
-
-def _is_list_type(annotation: type) -> bool:
-    return get_origin(annotation) is list or get_origin(annotation) is List
-
-
-def _get_list_type(annotation: type) -> Optional[type]:
-    args = get_args(annotation)
-    if args:
-        return args[0]
-
-    return None
 
 
 def _validate_codecs(codecs: Codecs) -> None:

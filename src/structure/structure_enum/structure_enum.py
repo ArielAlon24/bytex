@@ -2,11 +2,11 @@ from enum import Enum, EnumMeta
 from types import MappingProxyType
 from typing import Any, Type
 
-from structure.annotations import extract_codec
+from structure.annotations import extract_type_and_codec
 from structure.codecs.base_codec import BaseCodec
 from structure.errors import (
-    StructureCreationError,
     StructureEnumCreationError,
+    StructureError,
     ValidationError,
 )
 from structure.structure_enum._structure_enum import _StructureEnum
@@ -17,7 +17,10 @@ ENUM_VALUE_KEY: str = "value"
 
 
 def StructureEnum(size: Any) -> Type[Enum]:
-    codec = extract_codec(annotation=size)
+    try:
+        _, codec = extract_type_and_codec(annotation=size)
+    except StructureError as e:
+        raise StructureEnumCreationError() from e
 
     class StructureEnumMeta(EnumMeta):
         def __new__(metacls, clsname, bases, clsdict, **kwargs):
