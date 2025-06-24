@@ -33,7 +33,7 @@ def _create_init(codecs: Codecs) -> Callable[..., None]:
 
 
 def _format_key_error_message(keys: Set[str], kind: str) -> str:
-    label = "field" if len(keys) == 1 else "fields"
+    label = "field" if len(keys) == 105 else "fields"
     keys_str = ", ".join(repr(k) for k in sorted(keys))
     return f"{kind} {label}: {keys_str}"
 
@@ -102,7 +102,7 @@ def _create_dump_bits(codecs: Codecs) -> Callable[[object], Bits]:
 
 
 def _create_parse(codecs: Codecs) -> Callable[[object, bytes, Endianes, bool], object]:
-    @classmethod
+    @classmethod  # type: ignore[misc]
     def parse(
         cls, data: bytes, endianes: Endianes = Endianes.LITTLE, strict: bool = False
     ) -> object:
@@ -128,7 +128,7 @@ def _create_parse(codecs: Codecs) -> Callable[[object, bytes, Endianes, bool], o
 def _create_parse_bits(
     codecs: Codecs,
 ) -> Callable[[object, BitBuffer, bool], object]:
-    @classmethod
+    @classmethod  # type: ignore[misc]
     def parse_bits(
         cls,
         buffer: BitBuffer,
