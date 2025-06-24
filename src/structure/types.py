@@ -5,14 +5,11 @@ from structure.sign import Sign
 from structure.codecs import (
     IntegerCodec,
     FlagCodec,
-    TerminatedListCodec,
     TerminatedBytesCodec,
     TerminatedStringCodec,
-    StructureCodec,
     CharCodec,
     DataCodec,
 )
-from structure._structure.structure import Structure
 
 
 U1 = Annotated[int, IntegerCodec(bit_count=1, sign=Sign.UNSIGNED)]
@@ -42,24 +39,3 @@ Flag = Annotated[bool, FlagCodec()]
 Data = Annotated[bytes, DataCodec()]
 CStr = Annotated[str, TerminatedStringCodec(terminator=to_bits("\x00"))]
 ByteCStr = Annotated[bytes, TerminatedBytesCodec(terminator=to_bits(b"\x00"))]
-
-
-def string(terminator: Union[str, bytes]) -> TerminatedStringCodec:
-    return TerminatedStringCodec(terminator=to_bits(terminator))
-
-
-def buffer(terminator: bytes) -> TerminatedBytesCodec:
-    return TerminatedBytesCodec(terminator=to_bits(terminator))
-
-
-def vector(
-    structure_type: Type[Structure], terminator: Union[str, bytes, Structure]
-) -> TerminatedListCodec:
-    if isinstance(terminator, Structure):
-        return TerminatedListCodec(
-            item_codec=StructureCodec(structure_type),
-            terminator=terminator.dump_bits(),
-        )
-    return TerminatedListCodec(
-        item_codec=StructureCodec(structure_type), terminator=to_bits(terminator)
-    )
