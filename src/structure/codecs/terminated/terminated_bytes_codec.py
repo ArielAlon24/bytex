@@ -3,29 +3,30 @@ from dataclasses import dataclass
 from structure.bits import BitBuffer, Bits, from_bits
 from structure.bits.utils import is_subsequence, to_bits
 from structure.codecs.base_codec import BaseCodec
-from structure.codecs.char_codec import CharCodec
+from structure.codecs.basic.integer_codec import IntegerCodec
 from structure.errors import ValidationError
+from structure.sign import Sign
 
 
-CHAR_CODEC = CharCodec()
+U8_CODEC = IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
 
 
 @dataclass(frozen=True)
-class TerminatedStringCodec(BaseCodec[str]):
+class TerminatedBytesCodec(BaseCodec[bytes]):
     terminator: Bits
 
-    def serialize(self, value: str) -> Bits:
+    def serialize(self, value: bytes) -> Bits:
         bits = []
 
         for char in value:
-            bits += CHAR_CODEC.serialize(char)
+            bits += U8_CODEC.serialize(char)
 
         bits += self.terminator
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> str:
-        result = str()
+    def deserialize(self, bit_buffer: BitBuffer) -> bytes:
+        result = bytearray()
 
         while True:
             peek_data = bit_buffer.peek(len(self.terminator))
@@ -33,14 +34,14 @@ class TerminatedStringCodec(BaseCodec[str]):
                 bit_buffer.read(len(self.terminator))
                 break
 
-            result += CHAR_CODEC.deserialize(bit_buffer)
+            result.append(U8_CODEC.deserialize(bit_buffer))
 
-        return result
+        return bytes(result)
 
-    def validate(self, value: str) -> None:
-        if not isinstance(value, str):
+    def validate(self, value: bytes) -> None:
+        if not isinstance(value, bytes):
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(bytes)}'"
             )
 
         bits = to_bits(value)

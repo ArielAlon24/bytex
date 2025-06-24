@@ -5,7 +5,7 @@ from structure import Endianes
 from structure.errors import AlignmentError
 from structure.codecs import IntegerCodec
 from structure import Sign
-from structure._structure.method_creators import _create_dump
+from structure._structure.methods import _create_dump
 
 
 @pytest.mark.parametrize(

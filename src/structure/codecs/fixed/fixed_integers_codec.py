@@ -3,8 +3,8 @@ from typing import Annotated, List
 
 from structure.bits import BitBuffer, Bits, from_bits
 from structure.codecs.base_codec import BaseCodec
-from structure.codecs.char_codec import CharCodec
-from structure.codecs.integer_codec import IntegerCodec
+from structure.codecs.basic.char_codec import CharCodec
+from structure.codecs.basic.integer_codec import IntegerCodec
 from structure.errors import ValidationError
 
 

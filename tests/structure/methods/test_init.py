@@ -4,7 +4,7 @@ from utils import _create_empty_instance
 from typing import Any, Dict
 
 from structure._structure.types import Codecs
-from structure._structure.method_creators import _create_init
+from structure._structure.methods import _create_init
 from structure.codecs import IntegerCodec
 from structure import Sign
 from structure.errors import ValidationError

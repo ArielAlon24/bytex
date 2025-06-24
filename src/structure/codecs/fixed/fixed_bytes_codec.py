@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from structure.bits import BitBuffer, Bits, from_bits
 from structure.codecs.base_codec import BaseCodec
-from structure.codecs.integer_codec import IntegerCodec
+from structure.codecs.basic.integer_codec import IntegerCodec
 from structure.errors import ValidationError
 from structure.sign import Sign
 
@@ -12,7 +12,7 @@ EMPTY_BYTE = U8_CODEC.serialize(0)
 
 
 @dataclass(frozen=True)
-class ExactBytesCodec(BaseCodec[bytes]):
+class FixedBytesCodec(BaseCodec[bytes]):
     length: int
 
     def serialize(self, value: bytes) -> Bits:
@@ -20,6 +20,9 @@ class ExactBytesCodec(BaseCodec[bytes]):
 
         for char in value:
             bits += U8_CODEC.serialize(char)
+
+        for _ in range(self.length - len(value)):
+            bits += EMPTY_BYTE
 
         return bits
 
@@ -32,7 +35,7 @@ class ExactBytesCodec(BaseCodec[bytes]):
                 f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(bytes)}'"
             )
 
-        if len(value) != self.length:
+        if len(value) > self.length:
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of length `length` - {self.length} characters"
+                f"Invalid value, a {self.__class__.__name__}'s value must be up to `length` ({self.length}) characters"
             )

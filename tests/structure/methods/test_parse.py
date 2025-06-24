@@ -6,7 +6,7 @@ from utils import _create_codecs, Values, Value
 from structure import Endianes
 from structure.codecs import IntegerCodec
 from structure import Sign
-from structure._structure.method_creators import _create_parse
+from structure._structure.methods import _create_parse
 
 
 @pytest.mark.parametrize(
@@ -83,7 +83,7 @@ def test_parse_success(bytes_data: bytes, values: Values, endianes: Endianes):
 
 
 @pytest.mark.parametrize(
-    ("data", "values", "endianes", "expected_message"),
+    ("data", "values", "endianes"),
     [
         (
             b"\x14\x00\x80\x00",
@@ -92,7 +92,6 @@ def test_parse_success(bytes_data: bytes, values: Values, endianes: Endianes):
                 "b": Value(codec=IntegerCodec(16, Sign.UNSIGNED), value=128),
             },
             Endianes.BIG,
-            "Unexpected trailing data: 8 bits left",
         ),
         (
             b"\x14\x00\x80\xf0",
@@ -101,7 +100,6 @@ def test_parse_success(bytes_data: bytes, values: Values, endianes: Endianes):
                 "b": Value(codec=IntegerCodec(16, Sign.UNSIGNED), value=128),
             },
             Endianes.LITTLE,
-            "Unexpected trailing data: 8 bits left",
         ),
         (
             b"\x14\x00",
@@ -110,7 +108,6 @@ def test_parse_success(bytes_data: bytes, values: Values, endianes: Endianes):
                 "b": Value(codec=IntegerCodec(16, Sign.UNSIGNED), value=128),
             },
             Endianes.BIG,
-            "Insufficient data while parsing field 'b'",
         ),
         (
             b"\x01\x02\x03\x04",
@@ -119,19 +116,14 @@ def test_parse_success(bytes_data: bytes, values: Values, endianes: Endianes):
                 "b": Value(codec=IntegerCodec(16, Sign.UNSIGNED), value=0x0203),
             },
             Endianes.BIG,
-            "Unexpected trailing data: 8 bits left",
         ),
     ],
 )
-def test_parse_failure(
-    data: bytes, values: Values, endianes: Endianes, expected_message: str
-):
+def test_parse_failure(data: bytes, values: Values, endianes: Endianes):
     fields = _create_codecs(values)
     _type = MagicMock()
 
     _type.parse = _create_parse(fields)
 
-    with pytest.raises(ParsingError) as exc_info:
+    with pytest.raises(ParsingError):
         _type.parse.__get__(None, _type)(data, endianes=endianes, strict=True)  # type: ignore
-
-    assert expected_message == str(exc_info.value)

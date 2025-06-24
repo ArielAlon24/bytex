@@ -1,6 +1,6 @@
 import pytest
 from structure import BitBuffer
-from structure.codecs.flag_codec import FlagCodec
+from structure.codecs import FlagCodec
 from structure.errors import ValidationError
 
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from structure.bits import BitBuffer, Bits, from_bits
 from structure.codecs.base_codec import BaseCodec
-from structure.codecs.char_codec import CharCodec
+from structure.codecs.basic.char_codec import CharCodec
 from structure.errors import ValidationError
 
 
