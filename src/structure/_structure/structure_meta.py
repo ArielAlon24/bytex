@@ -13,6 +13,7 @@ from structure._structure.method_creators import (
     _create_repr,
 )
 from structure.codecs.prefix_bytes_codec import PrefixBytesCodec
+from structure.codecs.prefix_list_codec import PrefixListCodec
 from structure.errors import StructureCreationError
 from structure.length_encodings import (
     BaseLengthEncoding,
@@ -178,6 +179,10 @@ def _construct_list_length_encoded_codec(
         )
     if isinstance(length_encoding, Exact):
         return ExactListCodec(item_codec=item_codec, length=length_encoding.length)
+    if isinstance(length_encoding, Prefix):
+        return PrefixListCodec(
+            item_codec=item_codec, prefix_codec=length_encoding.codec
+        )
 
     raise StructureCreationError("Unsupported length encoding for `List[...]`.")
 
