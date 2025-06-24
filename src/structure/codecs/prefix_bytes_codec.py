@@ -36,6 +36,3 @@ class PrefixBytesCodec(BaseCodec[bytes]):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(str)}'"
             )
-
-    def __repr__(self) -> str:
-        return f"PrefixBytes({self.prefix_codec})"

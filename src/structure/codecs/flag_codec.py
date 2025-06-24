@@ -18,6 +18,3 @@ class FlagCodec(BaseCodec[bool]):
 
     def deserialize(self, bit_buffer: BitBuffer) -> bool:
         return bit_buffer.read(1)[0]
-
-    def __repr__(self) -> str:
-        return f"Flag"

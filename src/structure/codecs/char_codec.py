@@ -30,6 +30,3 @@ class CharCodec(BaseCodec[str]):
 
     def deserialize(self, bit_buffer: BitBuffer) -> str:
         return chr(U8_CODEC.deserialize(bit_buffer))
-
-    def __repr__(self) -> str:
-        return f"Char"

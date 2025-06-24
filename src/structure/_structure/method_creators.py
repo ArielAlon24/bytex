@@ -62,9 +62,9 @@ def _create_repr(codecs: Codecs) -> Callable[[object], str]:
             value = getattr(self, name)
 
             if index == 0:
-                result += f"{name}: {codec} = {value}"
+                result += f"{name}={repr(value)}"
             else:
-                result += f", {name}: {codec} = {value}"
+                result += f", {name}={repr(value)}"
 
         return f"{result})"
 

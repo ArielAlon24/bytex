@@ -41,8 +41,3 @@ def test_flag_serialize_deserialize_roundtrip(value: bool):
     buffer.write(bits)
     result = codec.deserialize(buffer)
     assert result is value
-
-
-def test_flag_repr():
-    codec = FlagCodec()
-    assert repr(codec) == "Flag"

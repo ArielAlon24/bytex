@@ -36,6 +36,3 @@ class PrefixStringCodec(BaseCodec[str]):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
             )
-
-    def __repr__(self) -> str:
-        return f"PrefixString({self.prefix_codec})"

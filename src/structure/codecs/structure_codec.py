@@ -24,6 +24,3 @@ class StructureCodec(BaseCodec[_Structure]):
             )
 
         value.validate()
-
-    def __repr__(self) -> str:
-        return "Structure"

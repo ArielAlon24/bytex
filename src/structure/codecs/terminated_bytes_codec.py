@@ -51,6 +51,3 @@ class TerminatedBytesCodec(BaseCodec[bytes]):
                 f"Invalid value, a {self.__class__.__name__}'s value cannot contain it's own "
                 f"terminator - {from_bits(self.terminator)}"
             )
-
-    def __repr__(self) -> str:
-        return f"TerminatedBytes({repr(from_bits(self.terminator))})"

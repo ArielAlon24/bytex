@@ -42,6 +42,3 @@ class FixedIntegersCodec(BaseCodec[List[Annotated[int, IntegerCodec]]]):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value must include up to `length` - {self.length} items"
             )
-
-    def __repr__(self) -> str:
-        return f"FixedString({self.length})"

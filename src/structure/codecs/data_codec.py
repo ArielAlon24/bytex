@@ -20,6 +20,3 @@ class DataCodec(BaseCodec[bytes]):
         bits = bit_buffer.read(len(bit_buffer))
 
         return from_bits(bits)
-
-    def __repr__(self) -> str:
-        return f"Flag"

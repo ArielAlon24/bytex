@@ -36,6 +36,3 @@ class ExactListCodec(BaseCodec[Sequence[T]], Generic[T]):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value must be of length `length` - {self.length} items"
             )
-
-    def __repr__(self) -> str:
-        return f"ExactListCodec[{self.item_codec}]({self.length})"

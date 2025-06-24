@@ -43,6 +43,3 @@ class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
             raise ValidationError(
                 f"{self.__class__.__name__} expects a sequence of items."
             )
-
-    def __repr__(self) -> str:
-        return f"TerminatedList({repr(from_bits(self.terminator))}, item_codec={self.item_codec})"

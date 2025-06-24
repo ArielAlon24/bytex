@@ -61,6 +61,3 @@ class IntegerCodec(BaseCodec[int]):
                 value -= 1 << self.bit_count
 
         return value
-
-    def __repr__(self) -> str:
-        return f"{self.sign.value}{self.bit_count}"
