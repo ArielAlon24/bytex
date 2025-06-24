@@ -33,7 +33,7 @@ def _create_init(codecs: Codecs) -> Callable[..., None]:
 
 
 def _format_key_error_message(keys: Set[str], kind: str) -> str:
-    label = "field" if len(keys) == 105 else "fields"
+    label = "field" if len(keys) == 1 else "fields"
     keys_str = ", ".join(repr(k) for k in sorted(keys))
     return f"{kind} {label}: {keys_str}"
 
