@@ -13,7 +13,7 @@ from structure._structure.method_creators import (
     _create_repr,
 )
 from structure.errors import StructureCreationError
-from structure.length_encodings import BaseLengthEncoding, Terminator, Fixed
+from structure.length_encodings import BaseLengthEncoding, Terminator, Fixed, Exact
 from structure.codecs import (
     BaseCodec,
     StructureCodec,
@@ -23,6 +23,8 @@ from structure.codecs import (
     TerminatedBytesCodec,
     FixedStringCodec,
     FixedBytesCodec,
+    ExactStringCodec,
+    ExactBytesCodec,
 )
 
 
@@ -116,9 +118,11 @@ def _construct_str_length_encoded_codec(
     length_encoding: BaseLengthEncoding,
 ) -> BaseCodec:
     if isinstance(length_encoding, Terminator):
-        return TerminatedStringCodec(length_encoding.get_terminator())
+        return TerminatedStringCodec(terminator=length_encoding.get_terminator())
     if isinstance(length_encoding, Fixed):
         return FixedStringCodec(length=length_encoding.length)
+    if isinstance(length_encoding, Exact):
+        return ExactStringCodec(length=length_encoding.length)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `str`"
     )
@@ -128,9 +132,11 @@ def _construct_bytes_length_encoded_codec(
     length_encoding: BaseLengthEncoding,
 ) -> BaseCodec:
     if isinstance(length_encoding, Terminator):
-        return TerminatedBytesCodec(length_encoding.get_terminator())
+        return TerminatedBytesCodec(terminator=length_encoding.get_terminator())
     if isinstance(length_encoding, Fixed):
-        return FixedBytesCodec(length_encoding.length)
+        return FixedBytesCodec(length=length_encoding.length)
+    if isinstance(length_encoding, Exact):
+        return ExactBytesCodec(length=length_encoding.length)
     raise StructureCreationError(
         f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `bytes`"
     )

@@ -9,3 +9,5 @@ from structure.codecs.terminated_bytes_codec import TerminatedBytesCodec
 from structure.codecs.data_codec import DataCodec
 from structure.codecs.fixed_string_codec import FixedStringCodec
 from structure.codecs.fixed_bytes_codec import FixedBytesCodec
+from structure.codecs.exact_bytes_codec import ExactBytesCodec
+from structure.codecs.exact_string_codec import ExactStringCodec
