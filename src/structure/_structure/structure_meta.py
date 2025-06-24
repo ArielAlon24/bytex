@@ -13,7 +13,13 @@ from structure._structure.method_creators import (
     _create_repr,
 )
 from structure.errors import StructureCreationError
-from structure.length_encodings import BaseLengthEncoding, Terminator, Fixed, Exact
+from structure.length_encodings import (
+    BaseLengthEncoding,
+    Terminator,
+    Fixed,
+    Exact,
+    Prefix,
+)
 from structure.codecs import (
     BaseCodec,
     IntegerCodec,
@@ -28,6 +34,7 @@ from structure.codecs import (
     ExactStringCodec,
     ExactBytesCodec,
     ExactListCodec,
+    PrefixStringCodec,
 )
 
 
@@ -126,8 +133,10 @@ def _construct_str_length_encoded_codec(
         return FixedStringCodec(length=length_encoding.length)
     if isinstance(length_encoding, Exact):
         return ExactStringCodec(length=length_encoding.length)
+    if isinstance(length_encoding, Prefix):
+        return PrefixStringCodec(integer_codec=length_encoding.codec)
     raise StructureCreationError(
-        f"Unsupported length encoding ('{length_encoding.__class__.__name__}') for `str`"
+        f"Unsupported length encoding `{length_encoding.__class__.__name__}` for `str`"
     )
 
 
