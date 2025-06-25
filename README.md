@@ -4,8 +4,6 @@ Like [Pydantic](https://github.com/pydantic/pydantic), but for binary formats.
 
 ## Installation
 
-> (Still not available on PyPI)
-
 ```console
 $ pip install bytex
 ```
