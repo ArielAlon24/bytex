@@ -1,4 +1,4 @@
-# PyStruct
+# bytex
 
 Like [Pydantic](https://github.com/pydantic/pydantic), but for binary formats.
 
@@ -7,7 +7,7 @@ Like [Pydantic](https://github.com/pydantic/pydantic), but for binary formats.
 > (Still not available on PyPI)
 
 ```console
-$ pip install pystruct
+$ pip install bytex
 ```
 
 ## Example
