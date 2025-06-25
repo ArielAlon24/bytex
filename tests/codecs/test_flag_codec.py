@@ -1,7 +1,7 @@
 import pytest
-from structure import BitBuffer
-from structure.codecs import FlagCodec
-from structure.errors import ValidationError
+from bytex import BitBuffer
+from bytex.codecs import FlagCodec
+from bytex.errors import ValidationError
 
 
 @pytest.mark.parametrize("value", [True, False])

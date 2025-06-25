@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, Generic, TypeVar
 
-from structure._structure.types import Codecs
-from structure.codecs.base_codec import BaseCodec
-from structure.field import Field
+from bytex._structure.types import Codecs
+from bytex.codecs.base_codec import BaseCodec
+from bytex.field import Field
 
 T = TypeVar("T")
 

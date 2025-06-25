@@ -3,11 +3,11 @@ from utils import _create_empty_instance
 
 from typing import Any, Dict
 
-from structure._structure.types import Codecs
-from structure._structure.methods import _create_init
-from structure.codecs import IntegerCodec
-from structure import Sign
-from structure.errors import ValidationError
+from bytex._structure.types import Codecs
+from bytex._structure.methods import _create_init
+from bytex.codecs import IntegerCodec
+from bytex import Sign
+from bytex.errors import ValidationError
 
 
 @pytest.mark.parametrize(

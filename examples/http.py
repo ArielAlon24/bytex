@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Annotated, List
 import json
 
-from structure import Structure, Endianes
-from structure.length_encodings import Terminator
-from structure.types import Data
+from bytex import Structure, Endianes
+from bytex.length_encodings import Terminator
+from bytex.types import Data
 
 
 class HTTPHeader(Structure):

@@ -1,8 +1,8 @@
 import pytest
 
-from structure.bits import BitBuffer, Bits
-from structure.endianes import Endianes
-from structure.errors import AlignmentError, InsufficientDataError
+from bytex.bits import BitBuffer, Bits
+from bytex.endianes import Endianes
+from bytex.errors import AlignmentError, InsufficientDataError
 
 
 @pytest.mark.parametrize(

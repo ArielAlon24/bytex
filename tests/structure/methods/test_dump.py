@@ -1,11 +1,11 @@
 import pytest
 from utils import _create_codecs, _create_instance, Values, Value
 
-from structure import Endianes
-from structure.errors import AlignmentError
-from structure.codecs import IntegerCodec
-from structure import Sign
-from structure._structure.methods import _create_dump
+from bytex import Endianes
+from bytex.errors import AlignmentError
+from bytex.codecs import IntegerCodec
+from bytex import Sign
+from bytex._structure.methods import _create_dump
 
 
 @pytest.mark.parametrize(

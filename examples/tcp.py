@@ -1,7 +1,7 @@
 from scapy import all as scapy
 
-from structure import Structure, Endianes
-from structure.types import U3, U4, U16, U32, Flag
+from bytex import Structure, Endianes
+from bytex.types import U3, U4, U16, U32, Flag
 
 
 class TCPFlags(Structure):

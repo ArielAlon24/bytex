@@ -1,4 +1,4 @@
-from structure.bits import Bits
+from bytex.bits import Bits
 
 
 def bits_to_string(bits: Bits) -> str:

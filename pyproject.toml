@@ -1,5 +1,5 @@
 [project]
-name = "structure"
+name = "bytex"
 version = "0.1.0"
 description = "Pydantic-like binary validation"
 readme = "README.md"

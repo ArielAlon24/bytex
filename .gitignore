@@ -104,4 +104,4 @@ __pypackages__/
 
 # Specific
 playground/
-
+.env

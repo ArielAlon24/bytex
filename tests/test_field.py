@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
-from structure.errors import UninitializedAccessError
-from structure.field import Field
+from bytex.errors import UninitializedAccessError
+from bytex.field import Field
 
 
 @pytest.fixture

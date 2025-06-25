@@ -2,9 +2,9 @@ import typing
 import pytest
 from pathlib import Path
 
-from structure import Structure
-from structure.errors import StructureCreationError
-from structure.types import U8, Data
+from bytex import Structure
+from bytex.errors import StructureCreationError
+from bytex.types import U8, Data
 
 
 def test_create_structure_invalid_types1() -> None:
