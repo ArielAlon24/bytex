@@ -1,6 +1,6 @@
 [project]
 name = "bytex"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pydantic-like binary validation"
 readme = "README.md"
 license = { text = "MIT" }
