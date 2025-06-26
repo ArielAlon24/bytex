@@ -1,6 +1,6 @@
 from typing import Callable
 
-from bytex._structure.types import Codecs
+from bytex.structure.types import Codecs
 
 
 def _create_validate(codecs: Codecs) -> Callable[[object], None]:

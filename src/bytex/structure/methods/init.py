@@ -1,6 +1,6 @@
 from typing import Any, Callable, Set
 
-from bytex._structure.types import Codecs
+from bytex.structure.types import Codecs
 from bytex.errors import ValidationError
 from bytex.field import Field
 

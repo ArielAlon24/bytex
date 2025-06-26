@@ -5,7 +5,7 @@ from bytex import Endianes
 from bytex.errors import AlignmentError
 from bytex.codecs import IntegerCodec
 from bytex import Sign
-from bytex._structure.methods import _create_dump
+from bytex.structure.methods import _create_dump
 
 
 @pytest.mark.parametrize(

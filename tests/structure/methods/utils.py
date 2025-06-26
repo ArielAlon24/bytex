@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Generic, TypeVar
 
-from bytex._structure.types import Codecs
+from bytex.structure.types import Codecs
 from bytex.codecs.base_codec import BaseCodec
 from bytex.field import Field
 

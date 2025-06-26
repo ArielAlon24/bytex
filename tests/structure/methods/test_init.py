@@ -3,8 +3,8 @@ from utils import _create_empty_instance
 
 from typing import Any, Dict
 
-from bytex._structure.types import Codecs
-from bytex._structure.methods import _create_init
+from bytex.structure.types import Codecs
+from bytex.structure.methods import _create_init
 from bytex.codecs import IntegerCodec
 from bytex import Sign
 from bytex.errors import ValidationError

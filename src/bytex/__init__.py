@@ -1,4 +1,4 @@
-from bytex._structure import Structure
+from bytex.structure import Structure
 from bytex.structure_enum.structure_enum import StructureEnum
 
 from bytex.sign import Sign

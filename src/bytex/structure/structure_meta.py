@@ -1,6 +1,6 @@
 from typing import Callable, Dict, Type, get_origin, get_args, Annotated
 
-from bytex._structure._structure import _Structure
+from bytex.structure._structure import _Structure
 from bytex.annotations import (
     extract_type_and_value,
     get_list_type,
@@ -8,8 +8,8 @@ from bytex.annotations import (
     is_sequence_type,
 )
 from bytex.structure_enum import _StructureEnum, STRUCTURE_ENUM_CODEC_KEY
-from bytex._structure.types import Codecs
-from bytex._structure.methods import (
+from bytex.structure.types import Codecs
+from bytex.structure.methods import (
     _create_init,
     _create_dump,
     _create_dump_bits,

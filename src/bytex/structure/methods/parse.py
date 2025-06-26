@@ -1,6 +1,6 @@
 from typing import Callable
 
-from bytex._structure.types import Codecs
+from bytex.structure.types import Codecs
 from bytex.endianes import Endianes
 from bytex.bits import BitBuffer
 from bytex.errors import ParsingError

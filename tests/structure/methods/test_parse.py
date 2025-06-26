@@ -6,7 +6,7 @@ from utils import _create_codecs, Values, Value
 from bytex import Endianes
 from bytex.codecs import IntegerCodec
 from bytex import Sign
-from bytex._structure.methods import _create_parse
+from bytex.structure.methods import _create_parse
 
 
 @pytest.mark.parametrize(

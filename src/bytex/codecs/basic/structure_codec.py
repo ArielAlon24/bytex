@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Type
 
-from bytex._structure._structure import _Structure
+from bytex.structure._structure import _Structure
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.errors import ValidationError
