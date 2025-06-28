@@ -1,16 +1,16 @@
 from typing import Callable
 
-from bytex.structure.types import Codecs
+from bytex.structure.types import Fields
 from bytex.bits import Bits, BitBuffer
 
 
-def _create_dump_bits(codecs: Codecs) -> Callable[[object], Bits]:
+def _create_dump_bits(fields: Fields) -> Callable[[object], Bits]:
     def dump_bits(self) -> Bits:
         buffer = BitBuffer()
 
-        for name, codec in codecs.items():
+        for name, field in fields.items():
             value = getattr(self, name)
-            buffer.write(codec.serialize(value))
+            buffer.write(field.codec.serialize(value))
 
         return buffer.to_bits()
 

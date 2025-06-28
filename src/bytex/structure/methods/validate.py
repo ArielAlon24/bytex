@@ -1,12 +1,12 @@
 from typing import Callable
 
-from bytex.structure.types import Codecs
+from bytex.structure.types import Fields
 
 
-def _create_validate(codecs: Codecs) -> Callable[[object], None]:
+def _create_validate(fields: Fields) -> Callable[[object], None]:
     def validate(self) -> None:
-        for name, codec in codecs.items():
+        for name, field in fields.items():
             value = getattr(self, name)
-            codec.validate(value)
+            field.codec.validate(value)
 
     return validate
