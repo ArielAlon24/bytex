@@ -1,5 +1,6 @@
 from typing import Callable, Dict, Type, get_origin, get_args, Annotated
 
+from bytex.field import Field
 from bytex.structure._structure import _Structure
 from bytex.annotations import (
     extract_type_and_value,
@@ -8,7 +9,7 @@ from bytex.annotations import (
     is_sequence_type,
 )
 from bytex.structure_enum import _StructureEnum, STRUCTURE_ENUM_CODEC_KEY
-from bytex.structure.types import Codecs
+from bytex.structure.types import Codecs, Fields
 from bytex.structure.methods import (
     _create_init,
     _create_dump,
@@ -48,7 +49,7 @@ from bytex.codecs import (
 
 
 ANNOTATIONS_KEY: str = "__annotations__"
-METHOD_CREATORS: Dict[str, Callable[[Codecs], Callable]] = {
+METHOD_CREATORS: Dict[str, Callable[[Fields], Callable]] = {
     "__init__": _create_init,
     "dump": _create_dump,
     "dump_bits": _create_dump_bits,
@@ -64,11 +65,27 @@ class StructureMeta(type):
         annotations = namespace.get(ANNOTATIONS_KEY, {})
         codecs = _construct_codecs(annotations)
         _validate_codecs(codecs)
+        fields = _create_fields(namespace=namespace, codecs=codecs)
 
         for method_name, method_creator in METHOD_CREATORS.items():
-            namespace[method_name] = method_creator(codecs)
+            namespace[method_name] = method_creator(fields)
 
         return super().__new__(mcs, name, bases, namespace)
+
+
+def _create_fields(namespace, codecs: Codecs) -> Fields:
+    fields = {}
+    for name, codec in codecs.items():
+        default_value = namespace.get(name, None)
+        if default_value is not None:
+            field = Field(codec=codec, name=name, default=default_value)
+        else:
+            field = Field(codec=codec, name=name)
+
+        fields[name] = field
+        namespace[name] = field
+
+    return fields
 
 
 def _construct_codecs(annotations: Dict[str, type]) -> Codecs:

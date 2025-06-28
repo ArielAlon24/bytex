@@ -1,12 +1,12 @@
 from typing import Callable
 
-from bytex.structure.types import Codecs
+from bytex.structure.types import Fields
 from bytex.bits import BitBuffer
 from bytex.errors import StructureError, ParsingError
 
 
 def _create_parse_bits(
-    codecs: Codecs,
+    fields: Fields,
 ) -> Callable[[object, BitBuffer, bool], object]:
     @classmethod  # type: ignore[misc]
     def parse_bits(
@@ -16,9 +16,9 @@ def _create_parse_bits(
     ) -> object:
         values = {}
 
-        for name, codec in codecs.items():
+        for name, field in fields.items():
             try:
-                values[name] = codec.deserialize(buffer)
+                values[name] = field.codec.deserialize(buffer)
             except StructureError as e:
                 raise ParsingError(
                     f"Insufficient data while parsing field '{name}'"

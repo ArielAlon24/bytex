@@ -7,6 +7,8 @@ from bytex import Structure, Endianes
 from bytex.length_encodings import Terminator
 from bytex.types import Data
 
+HOST = "wtfismyip.com"
+
 
 class HTTPHeader(Structure):
     key: Annotated[str, Terminator(": ")]
@@ -14,11 +16,11 @@ class HTTPHeader(Structure):
 
 
 class HTTPRequest(Structure):
-    method: Annotated[str, Terminator(" ")]
+    method: Annotated[str, Terminator(" ")] = "GET"
     path: Annotated[str, Terminator(" ")]
-    version: Annotated[str, Terminator("\r\n")]
+    version: Annotated[str, Terminator("\r\n")] = "HTTP/1.1"
     headers: Annotated[List[HTTPHeader], Terminator("\r\n")]
-    data: Data
+    data: Data = b""
 
 
 class HTTPResponse(Structure):
@@ -31,16 +33,13 @@ class HTTPResponse(Structure):
 
 def build_request() -> HTTPRequest:
     return HTTPRequest(
-        method="GET",
         path="/json",
-        version="HTTP/1.1",
         headers=[
-            HTTPHeader(key="Host", value="wtfismyip.com"),
+            HTTPHeader(key="Host", value=HOST),
             HTTPHeader(key="User-Agent", value="Structure"),
             HTTPHeader(key="Accept", value="*/*"),
             HTTPHeader(key="Date", value=str(datetime.now())),
         ],
-        data=b"",
     )
 
 
@@ -48,7 +47,7 @@ def main():
     request = build_request()
     raw_request = request.dump(endianes=Endianes.BIG)
 
-    with socket.create_connection(("wtfismyip.com", 80)) as sock:
+    with socket.create_connection((HOST, 80)) as sock:
         sock.sendall(raw_request)
         raw_response = sock.recv(4096)
 
