@@ -10,6 +10,7 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest==8.3.5"]
 examples = ["scapy==2.6.1"]
+bench = ["rich==14.0.0", "construct==2.10.70"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
