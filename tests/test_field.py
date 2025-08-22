@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.errors import UninitializedAccessError
@@ -80,4 +82,4 @@ def test_list_get_after_set(context: Context) -> None:
 
 def test_get_on_class_raises_error(context: Context) -> None:
     with pytest.raises(UninitializedAccessError):
-        _ = context.class_type.x
+        _ = context.class_type.x  # type: ignore
