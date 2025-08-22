@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from bytex.bits.types import Bits
 from bytex.endianes import Endianes
 from bytex.errors import AlignmentError, InsufficientDataError
-from bytex.bits.types import Bits
 
 
 class BitBuffer:

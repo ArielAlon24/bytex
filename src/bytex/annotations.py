@@ -1,5 +1,5 @@
-from typing import Any, List, Optional, Tuple, get_args, get_origin, Annotated
 import collections.abc
+from typing import Annotated, Any, List, Optional, Tuple, get_args, get_origin
 
 from bytex.errors import StructureError
 
@@ -16,7 +16,7 @@ def extract_type_and_value(annotation: Any) -> Tuple[Any, Any]:
     the `<base-type>` and `<modifier-class>` as a tuple
     """
 
-    if not get_origin(annotation) is Annotated:
+    if get_origin(annotation) is not Annotated:
         raise StructureError(
             "Invalid Annotated usage: expected `Annotated[Type, <...>]`"
         )

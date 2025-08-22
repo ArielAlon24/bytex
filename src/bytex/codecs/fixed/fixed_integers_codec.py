@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Annotated, List
 
-from bytex.bits import BitBuffer, Bits, from_bits
+from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
+from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.codecs.basic.char_codec import CharCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.errors import ValidationError
@@ -12,9 +13,12 @@ CHAR_CODEC = CharCodec()
 
 
 @dataclass(frozen=True)
-class FixedIntegersCodec(BaseCodec[List[Annotated[int, IntegerCodec]]]):
+class FixedIntegersCodec(BaseListCodec[List[Annotated[int, IntegerCodec]]]):
     integer_codec: IntegerCodec
     length: int
+
+    def get_inner_codec(self) -> BaseCodec:
+        return self.integer_codec
 
     def serialize(self, value: List[Annotated[int, IntegerCodec]]) -> Bits:
         bits = []

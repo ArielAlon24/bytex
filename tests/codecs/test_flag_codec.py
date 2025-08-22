@@ -1,4 +1,5 @@
 import pytest
+
 from bytex import BitBuffer
 from bytex.codecs import FlagCodec
 from bytex.errors import ValidationError

@@ -1,5 +1,6 @@
 import pytest
-from bytex import Sign, BitBuffer
+
+from bytex import BitBuffer, Sign
 from bytex.codecs import IntegerCodec
 from bytex.errors import ValidationError
 

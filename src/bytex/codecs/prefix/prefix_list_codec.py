@@ -3,6 +3,7 @@ from typing import Generic, TypeVar, Sequence
 
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
+from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.errors import ValidationError
 
@@ -10,9 +11,12 @@ T = TypeVar("T")
 
 
 @dataclass(frozen=True)
-class PrefixListCodec(BaseCodec[Sequence[T]], Generic[T]):
+class PrefixListCodec(BaseListCodec[Sequence[T]], Generic[T]):
     prefix_codec: IntegerCodec
     item_codec: BaseCodec[T]
+
+    def get_inner_codec(self) -> BaseCodec:
+        return self.item_codec
 
     def serialize(self, value: Sequence[T]) -> Bits:
         bits = []

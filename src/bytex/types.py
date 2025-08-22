@@ -1,16 +1,15 @@
 from typing import Annotated
 
 from bytex.bits import to_bits
-from bytex.sign import Sign
 from bytex.codecs import (
-    IntegerCodec,
-    FlagCodec,
-    TerminatedBytesCodec,
-    TerminatedStringCodec,
     CharCodec,
     DataCodec,
+    FlagCodec,
+    IntegerCodec,
+    TerminatedBytesCodec,
+    TerminatedStringCodec,
 )
-
+from bytex.sign import Sign
 
 U1 = Annotated[int, IntegerCodec(bit_count=1, sign=Sign.UNSIGNED)]
 U3 = Annotated[int, IntegerCodec(bit_count=3, sign=Sign.UNSIGNED)]

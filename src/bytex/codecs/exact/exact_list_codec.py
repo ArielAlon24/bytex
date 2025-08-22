@@ -3,15 +3,19 @@ from typing import Generic, TypeVar, Sequence
 
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
+from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.errors import ValidationError
 
 T = TypeVar("T")
 
 
 @dataclass(frozen=True)
-class ExactListCodec(BaseCodec[Sequence[T]], Generic[T]):
+class ExactListCodec(BaseListCodec[Sequence[T]], Generic[T]):
     item_codec: BaseCodec[T]
     length: int
+
+    def get_inner_codec(self) -> BaseCodec:
+        return self.item_codec
 
     def serialize(self, value: Sequence[T]) -> Bits:
         self.validate(value)

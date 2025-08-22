@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 STRUCTURE_ENUM_CODEC_KEY: str = "_codec_"
 
 

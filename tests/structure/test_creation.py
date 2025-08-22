@@ -1,6 +1,7 @@
 import typing
-import pytest
 from pathlib import Path
+
+import pytest
 
 from bytex import Structure
 from bytex.errors import StructureCreationError
