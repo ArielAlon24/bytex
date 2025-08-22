@@ -1,9 +1,8 @@
-from re import I
 from typing import Any, Callable, Dict, Set
 
-from bytex.structure.types import Fields
 from bytex.errors import ValidationError
 from bytex.field import Field
+from bytex.structure.types import Fields
 
 
 def _create_init(fields: Fields) -> Callable[..., None]:

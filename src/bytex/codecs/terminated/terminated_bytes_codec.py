@@ -7,7 +7,6 @@ from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.errors import ValidationError
 from bytex.sign import Sign
 
-
 U8_CODEC = IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
 
 
@@ -41,7 +40,7 @@ class TerminatedBytesCodec(BaseCodec[bytes]):
     def validate(self, value: bytes) -> None:
         if not isinstance(value, bytes):
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(bytes)}'"
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{type(bytes)}'"
             )
 
         bits = to_bits(value)
@@ -49,5 +48,5 @@ class TerminatedBytesCodec(BaseCodec[bytes]):
         if is_subsequence(self.terminator, bits):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value cannot contain it's own "
-                f"terminator - {from_bits(self.terminator)}"
+                f"terminator - {from_bits(self.terminator)!r}"
             )

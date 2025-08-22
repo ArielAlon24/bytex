@@ -1,4 +1,5 @@
 from typing import Any, List, Optional, Protocol
+
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.errors import UninitializedAccessError

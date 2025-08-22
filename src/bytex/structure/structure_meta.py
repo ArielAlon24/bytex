@@ -1,52 +1,45 @@
-from typing import Callable, Dict, Type, get_origin, get_args, Annotated
+from typing import Annotated, Callable, Dict, Type, get_args, get_origin
 
-from bytex.field import Field
-from bytex.structure._structure import _Structure
 from bytex.annotations import (
     extract_type_and_value,
     get_list_type,
     is_list_type,
     is_sequence_type,
 )
-from bytex.structure_enum import _StructureEnum, STRUCTURE_ENUM_CODEC_KEY
-from bytex.structure.types import Codecs, Fields
-from bytex.structure.methods import (
-    _create_init,
-    _create_dump,
-    _create_dump_bits,
-    _create_parse,
-    _create_parse_bits,
-    _create_validate,
-    _create_repr,
-)
-from bytex.errors import StructureCreationError, StructureEnumCreationError
-from bytex.length_encodings import (
-    BaseLengthEncoding,
-    Terminator,
-    Fixed,
-    Exact,
-    Prefix,
-)
 from bytex.codecs import (
     BaseCodec,
-    IntegerCodec,
-    StructureCodec,
     DataCodec,
-    TerminatedListCodec,
-    TerminatedStringCodec,
-    TerminatedBytesCodec,
-    FixedStringCodec,
-    FixedBytesCodec,
-    FixedIntegersCodec,
-    ExactStringCodec,
+    EnumCodec,
     ExactBytesCodec,
     ExactListCodec,
+    ExactStringCodec,
+    FixedBytesCodec,
+    FixedIntegersCodec,
+    FixedStringCodec,
+    IntegerCodec,
     PrefixBytesCodec,
     PrefixListCodec,
     PrefixStringCodec,
-    EnumCodec,
+    StructureCodec,
+    TerminatedBytesCodec,
+    TerminatedListCodec,
+    TerminatedStringCodec,
 )
-
+from bytex.errors import StructureCreationError, StructureEnumCreationError
+from bytex.field import Field
+from bytex.length_encodings import BaseLengthEncoding, Exact, Fixed, Prefix, Terminator
+from bytex.structure._structure import _Structure
+from bytex.structure.methods import (
+    _create_dump,
+    _create_dump_bits,
+    _create_init,
+    _create_parse,
+    _create_parse_bits,
+    _create_repr,
+    _create_validate,
+)
+from bytex.structure.types import Codecs, Fields
+from bytex.structure_enum import STRUCTURE_ENUM_CODEC_KEY, _StructureEnum
 
 ANNOTATIONS_KEY: str = "__annotations__"
 METHOD_CREATORS: Dict[str, Callable[[Fields], Callable]] = {
@@ -150,9 +143,9 @@ def _construct_length_encoded_codec(
             f"Only `Sequence` types can have a length encoding, got: `{str(base_type)}`"
         )
 
-    if base_type == str:
+    if base_type is str:
         return _construct_str_length_encoded_codec(length_encoding)
-    elif base_type == bytes:
+    elif base_type is bytes:
         return _construct_bytes_length_encoded_codec(length_encoding)
     elif is_list_type(base_type):
         return _construct_list_length_encoded_codec(base_type, length_encoding)

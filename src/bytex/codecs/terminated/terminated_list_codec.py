@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar, Sequence
+from typing import Generic, Sequence, TypeVar
 
-from bytex.bits import BitBuffer, Bits, from_bits
+from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.errors import ValidationError
 

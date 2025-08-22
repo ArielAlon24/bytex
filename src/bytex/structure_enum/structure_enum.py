@@ -4,15 +4,11 @@ from typing import Any, Type
 
 from bytex.annotations import extract_type_and_value
 from bytex.codecs.base_codec import BaseCodec
-from bytex.errors import (
-    StructureEnumCreationError,
-    ValidationError,
-)
+from bytex.errors import StructureEnumCreationError, ValidationError
 from bytex.structure_enum._structure_enum import (
-    _StructureEnum,
     STRUCTURE_ENUM_CODEC_KEY,
+    _StructureEnum,
 )
-
 
 ENUM_VALUE_KEY: str = "value"
 

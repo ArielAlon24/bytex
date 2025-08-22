@@ -6,7 +6,6 @@ from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.char_codec import CharCodec
 from bytex.errors import ValidationError
 
-
 CHAR_CODEC = CharCodec()
 
 
@@ -48,5 +47,5 @@ class TerminatedStringCodec(BaseCodec[str]):
         if is_subsequence(self.terminator, bits):
             raise ValidationError(
                 f"Invalid value, a {self.__class__.__name__}'s value cannot contain it's own "
-                f"terminator - {from_bits(self.terminator)}"
+                f"terminator - {from_bits(self.terminator).decode()}"
             )
