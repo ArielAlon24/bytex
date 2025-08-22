@@ -1,4 +1,6 @@
 from bytex.codecs.base_codec import BaseCodec
+from bytex.codecs.base_list_codec import BaseListCodec
+
 from bytex.codecs.enum_codec import EnumCodec
 
 from bytex.codecs.basic.char_codec import CharCodec
