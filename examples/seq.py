@@ -1,9 +1,9 @@
 from typing import Annotated, List
+
 from bytex import Structure
 from bytex.endianes import Endianes
-from bytex.length_encodings import Fixed, Prefix, Exact
-from bytex.types import U32, U8
-from bytex.errors import StructureError
+from bytex.length_encodings import Exact, Fixed, Prefix
+from bytex.types import U8, U32
 
 
 class Sequences(Structure):

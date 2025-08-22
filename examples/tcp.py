@@ -1,6 +1,6 @@
 from scapy import all as scapy
 
-from bytex import Structure, Endianes
+from bytex import Endianes, Structure
 from bytex.types import U3, U4, U16, U32, Flag
 
 

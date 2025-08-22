@@ -1,9 +1,9 @@
+import json
 import socket
 from datetime import datetime
 from typing import Annotated, List
-import json
 
-from bytex import Structure, Endianes
+from bytex import Endianes, Structure
 from bytex.length_encodings import Terminator
 from bytex.types import Data
 
@@ -54,7 +54,7 @@ def main():
     response = HTTPResponse.parse(raw_response, endianes=Endianes.BIG)
 
     print(f"status: {response.status_code} {response.status}")
-    print(f"headers:")
+    print("headers:")
     for header in response.headers:
         print(f"\t{header.key} = {header.value}")
 

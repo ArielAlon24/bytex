@@ -3,11 +3,11 @@ from typing import Annotated, List
 
 from bytex import Structure, StructureEnum
 from bytex.endianes import Endianes
-from bytex.length_encodings import Terminator, Prefix
+from bytex.length_encodings import Prefix, Terminator
 from bytex.types import U8, U16
 
 
-class OrderType(StructureEnum(U8)):
+class OrderType(StructureEnum(U8)):  # type: ignore[misc]
     DINE_IN = auto()
     DELIVERY = auto()
     PICKUP = auto()
@@ -43,7 +43,7 @@ def main() -> None:
 
     print(order)
 
-    print(f"Order Dumped: {order.dump(endianes=Endianes.BIG)}")
+    print(f"Order Dumped: {order.dump(endianes=Endianes.BIG)!r}")
 
     roundtrip = PizzaOrder.parse(order.dump())
 
