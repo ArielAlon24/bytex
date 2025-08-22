@@ -105,3 +105,5 @@ __pypackages__/
 # Specific
 playground/
 .env
+
+.ruff_cache
