@@ -17,7 +17,7 @@ class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
     def serialize(self, value: Sequence[T], endianes: Endianes) -> Bits:
         self.validate(value)
 
-        bits: Bits = []
+        bits = []
 
         for item in value:
             bits.extend(self.item_codec.serialize(item, endianes=endianes))
