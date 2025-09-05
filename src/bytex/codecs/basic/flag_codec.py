@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from bytex import endianes
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.errors import ValidationError
@@ -13,8 +14,8 @@ class FlagCodec(BaseCodec[bool]):
                 f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(bool)}'"
             )
 
-    def serialize(self, value: bool) -> Bits:
+    def serialize(self, value: bool, endianes: endianes.Endianes) -> Bits:
         return [value]
 
-    def deserialize(self, bit_buffer: BitBuffer) -> bool:
+    def deserialize(self, bit_buffer: BitBuffer, endianes: endianes.Endianes) -> bool:
         return bit_buffer.read(1)[0]

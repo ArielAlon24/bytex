@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 
 from bytex.bits import BitBuffer, Bits
+from bytex.bits.utils import swap_endianes
 from bytex.codecs.base_codec import BaseCodec
-from bytex.sign import Sign
+from bytex.endianes import Endianes
 from bytex.errors import ValidationError
+from bytex.sign import Sign
 
 
 @dataclass(frozen=True)
@@ -37,8 +39,8 @@ class IntegerCodec(BaseCodec[int]):
                 f"range [{minimum}, {maximum}]"
             )
 
-    def serialize(self, value: int) -> Bits:
-        bits = []
+    def serialize(self, value: int, endianes: Endianes) -> Bits:
+        bits: Bits = []
 
         if self.sign == Sign.SIGNED and value < 0:
             value = (1 << self.bit_count) + value
@@ -46,10 +48,16 @@ class IntegerCodec(BaseCodec[int]):
         for i in reversed(range(self.bit_count)):
             bits.append(bool((value >> i) & 1))
 
+        if endianes == Endianes.LITTLE:
+            bits = swap_endianes(bits)
+
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> int:
+    def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> int:
         bits = bit_buffer.read(self.bit_count)
+
+        if endianes == Endianes.LITTLE:
+            bits = swap_endianes(bits)
 
         value = 0
         for bit in bits:

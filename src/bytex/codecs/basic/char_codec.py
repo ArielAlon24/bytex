@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
+from bytex.endianes import Endianes
 from bytex.errors import ValidationError
 from bytex.sign import Sign
-
 
 U8_CODEC = IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
 
@@ -15,7 +15,7 @@ class CharCodec(BaseCodec[str]):
     def validate(self, value: str) -> None:
         if not isinstance(value, str):
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(bool)}'"
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
             )
 
         if len(value) != 1:
@@ -25,8 +25,8 @@ class CharCodec(BaseCodec[str]):
 
         return U8_CODEC.validate(ord(value))
 
-    def serialize(self, value: str) -> Bits:
-        return U8_CODEC.serialize(ord(value))
+    def serialize(self, value: str, endianes: Endianes) -> Bits:
+        return U8_CODEC.serialize(ord(value), endianes=endianes)
 
-    def deserialize(self, bit_buffer: BitBuffer) -> str:
-        return chr(U8_CODEC.deserialize(bit_buffer))
+    def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> str:
+        return chr(U8_CODEC.deserialize(bit_buffer, endianes=endianes))
