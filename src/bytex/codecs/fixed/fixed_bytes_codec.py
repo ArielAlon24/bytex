@@ -28,13 +28,13 @@ class FixedBytesCodec(BaseCodec[bytes]):
 
     def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> bytes:
         return from_bits(
-            bit_buffer.read(U8_CODEC.bit_count * self.length), endianes=endianes
+            bit_buffer.read(U8_CODEC.bit_count * self.length), endianes=Endianes.BIG
         )
 
     def validate(self, value: bytes) -> None:
         if not isinstance(value, bytes):
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(bytes)}'"
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(bytes)}'"
             )
 
         if len(value) > self.length:
