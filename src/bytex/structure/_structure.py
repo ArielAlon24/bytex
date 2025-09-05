@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from typing import Any
+
 from typing_extensions import Self
-from bytex.endianes import Endianes
+
 from bytex.bits import BitBuffer, Bits
+from bytex.endianes import Endianes
 
 
 class _Structure:
@@ -23,7 +25,9 @@ class _Structure:
         raise NotImplementedError
 
     @classmethod
-    def parse_bits(cls, buffer: BitBuffer, strict: bool = False) -> Self:
+    def parse_bits(
+        cls, buffer: BitBuffer, endianes: Endianes, strict: bool = False
+    ) -> Self:
         raise NotImplementedError
 
     def validate(self) -> None:
