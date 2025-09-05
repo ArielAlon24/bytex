@@ -4,8 +4,8 @@ from bytex.bits import BitBuffer, Bits, from_bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.char_codec import CharCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
+from bytex.endianes import Endianes
 from bytex.errors import ValidationError
-
 
 CHAR_CODEC = CharCodec()
 
@@ -14,20 +14,20 @@ CHAR_CODEC = CharCodec()
 class PrefixStringCodec(BaseCodec[str]):
     prefix_codec: IntegerCodec
 
-    def serialize(self, value: str) -> Bits:
+    def serialize(self, value: str, endianes: Endianes) -> Bits:
         bits = []
         length = len(value)
 
         self.prefix_codec.validate(length)
-        bits += self.prefix_codec.serialize(length)
+        bits += self.prefix_codec.serialize(length, endianes=endianes)
 
         for char in value:
-            bits += CHAR_CODEC.serialize(char)
+            bits += CHAR_CODEC.serialize(char, endianes=endianes)
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> str:
-        length = self.prefix_codec.deserialize(bit_buffer)
+    def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> str:
+        length = self.prefix_codec.deserialize(bit_buffer, endianes=endianes)
 
         return from_bits(bit_buffer.read(8 * length)).decode()
 
