@@ -1,5 +1,5 @@
 test:
-    pytest -vv .
+    pytest .
 
 lint:
     black .

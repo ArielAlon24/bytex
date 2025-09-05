@@ -3,6 +3,7 @@ from typing import Generic, Sequence, TypeVar
 
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 T = TypeVar("T")
@@ -13,19 +14,19 @@ class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
     item_codec: BaseCodec[T]
     terminator: Bits
 
-    def serialize(self, value: Sequence[T]) -> Bits:
+    def serialize(self, value: Sequence[T], endianness: Endianness) -> Bits:
         self.validate(value)
 
-        bits: Bits = []
+        bits = []
 
         for item in value:
-            bits.extend(self.item_codec.serialize(item))
+            bits.extend(self.item_codec.serialize(item, endianness=endianness))
 
         bits.extend(self.terminator)
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> Sequence[T]:
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> Sequence[T]:
         items = []
 
         while True:
@@ -34,7 +35,7 @@ class TerminatedListCodec(BaseCodec[Sequence[T]], Generic[T]):
                 bit_buffer.read(len(self.terminator))
                 break
 
-            items.append(self.item_codec.deserialize(bit_buffer))
+            items.append(self.item_codec.deserialize(bit_buffer, endianness=endianness))
 
         return items
 

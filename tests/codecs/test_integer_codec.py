@@ -2,6 +2,7 @@ import pytest
 
 from bytex import BitBuffer, Sign
 from bytex.codecs import IntegerCodec
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -71,7 +72,7 @@ def test_validate_failure(number: IntegerCodec, value: int):
 )
 def test_serialize(bit_count, sign, value, expected_bits):
     codec = IntegerCodec(bit_count=bit_count, sign=sign)
-    bits = codec.serialize(value)
+    bits = codec.serialize(value, endianness=Endianness.BIG)
     assert bits == expected_bits
 
 
@@ -94,7 +95,7 @@ def test_deserialize(bit_count, sign, bits, expected_value):
     codec = IntegerCodec(bit_count=bit_count, sign=sign)
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer)
+    result = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result == expected_value
 
 
@@ -127,8 +128,8 @@ def test_serialize_validation_error(bit_count, sign, value):
 )
 def test_serialize_deserialize_roundtrip(bit_count, sign, value):
     codec = IntegerCodec(bit_count=bit_count, sign=sign)
-    bits = codec.serialize(value)
+    bits = codec.serialize(value, endianness=Endianness.BIG)
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer)
+    result = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result == value

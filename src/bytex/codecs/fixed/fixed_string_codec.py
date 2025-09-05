@@ -3,30 +3,32 @@ from dataclasses import dataclass
 from bytex.bits import BitBuffer, Bits, from_bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.char_codec import CharCodec
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
-
 CHAR_CODEC = CharCodec()
-EMPTY_CHAR = CHAR_CODEC.serialize("\0")
+EMPTY_CHAR = CHAR_CODEC.serialize("\0", endianness=Endianness.BIG)
 
 
 @dataclass(frozen=True)
 class FixedStringCodec(BaseCodec[str]):
     length: int
 
-    def serialize(self, value: str) -> Bits:
+    def serialize(self, value: str, endianness: Endianness) -> Bits:
         bits = []
 
         for char in value:
-            bits += CHAR_CODEC.serialize(char)
+            bits += CHAR_CODEC.serialize(char, endianness=endianness)
 
         for _ in range(self.length - len(value)):
             bits += EMPTY_CHAR
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> str:
-        return from_bits(bit_buffer.read(8 * self.length)).decode()
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> str:
+        return from_bits(
+            bit_buffer.read(8 * self.length), endianness=Endianness.BIG
+        ).decode()
 
     def validate(self, value: str) -> None:
         if not isinstance(value, str):

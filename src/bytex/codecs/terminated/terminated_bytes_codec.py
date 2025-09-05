@@ -4,6 +4,7 @@ from bytex.bits import BitBuffer, Bits, from_bits
 from bytex.bits.utils import is_subsequence, to_bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 from bytex.sign import Sign
 
@@ -14,17 +15,17 @@ U8_CODEC = IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
 class TerminatedBytesCodec(BaseCodec[bytes]):
     terminator: Bits
 
-    def serialize(self, value: bytes) -> Bits:
+    def serialize(self, value: bytes, endianness: Endianness) -> Bits:
         bits = []
 
         for char in value:
-            bits += U8_CODEC.serialize(char)
+            bits += U8_CODEC.serialize(char, endianness=endianness)
 
         bits += self.terminator
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> bytes:
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> bytes:
         result = bytearray()
 
         while True:
@@ -33,7 +34,7 @@ class TerminatedBytesCodec(BaseCodec[bytes]):
                 bit_buffer.read(len(self.terminator))
                 break
 
-            result.append(U8_CODEC.deserialize(bit_buffer))
+            result.append(U8_CODEC.deserialize(bit_buffer, endianness=endianness))
 
         return bytes(result)
 

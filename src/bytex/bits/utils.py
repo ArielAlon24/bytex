@@ -1,33 +1,41 @@
 from typing import Union
 
 from bytex.bits.types import Bits
-from bytex.errors import ValidationError
+from bytex.endianness import Endianness
+from bytex.errors import AlignmentError
 
 
-def to_bits(data: Union[str, bytes]) -> Bits:
+def to_bits(data: Union[str, bytes], endianness: Endianness = Endianness.BIG) -> Bits:
     if isinstance(data, str):
         data = data.encode()
 
-    bits = []
+    bits: Bits = []
 
     for byte in data:
         for i in range(8):
             bits.append(bool((byte >> (7 - i)) & 1))
 
+    if endianness == Endianness.LITTLE:
+        bits = swap_endianness(bits)
+
     return bits
 
 
-def from_bits(bits: Bits) -> bytes:
+def from_bits(bits: Bits, endianness: Endianness = Endianness.BIG) -> bytes:
     if len(bits) % 8 != 0:
-        raise ValidationError("Number of bits must be a multiple of 8")
+        raise AlignmentError("Number of bits must be a multiple of 8")
+
+    if endianness == Endianness.LITTLE:
+        bits = swap_endianness(bits)
 
     result = bytearray()
-
     for i in range(0, len(bits), 8):
-        byte = 0
-        for j in range(8):
-            byte |= (1 if bits[i + j] else 0) << (7 - j)
-        result.append(byte)
+        chunk = bits[i : i + 8]
+        value = 0
+        for j, bit in enumerate(chunk):
+            if bit:
+                value |= 1 << (7 - j)
+        result.append(value)
 
     return bytes(result)
 
@@ -73,3 +81,28 @@ def is_subsequence(sub: Bits, full: Bits) -> bool:
         if full[i : i + m] == sub:
             return True
     return False
+
+
+def swap_endianness(bits: Bits) -> Bits:
+    swapped: Bits = []
+    n = len(bits)
+
+    remainder = n % 8
+    if remainder:
+        head = bits[:remainder]
+        swapped.extend(head)
+        bits = bits[remainder:]
+
+    for i in range(0, len(bits), 8):
+        byte = bits[i : i + 8]
+        swapped = byte + swapped
+
+    return swapped
+
+
+def bits_to_string(bits: Bits) -> str:
+    return "".join([str(int(i)) for i in bits])
+
+
+def string_to_bits(string: str) -> Bits:
+    return [bool(int(i)) for i in string]

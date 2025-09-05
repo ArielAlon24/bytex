@@ -4,6 +4,7 @@ from bytex.bits import BitBuffer, Bits, from_bits
 from bytex.bits.utils import is_subsequence, to_bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.char_codec import CharCodec
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 CHAR_CODEC = CharCodec()
@@ -13,17 +14,17 @@ CHAR_CODEC = CharCodec()
 class TerminatedStringCodec(BaseCodec[str]):
     terminator: Bits
 
-    def serialize(self, value: str) -> Bits:
+    def serialize(self, value: str, endianness: Endianness) -> Bits:
         bits = []
 
         for char in value:
-            bits += CHAR_CODEC.serialize(char)
+            bits += CHAR_CODEC.serialize(char, endianness=endianness)
 
         bits += self.terminator
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer) -> str:
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> str:
         result = str()
 
         while True:
@@ -32,7 +33,7 @@ class TerminatedStringCodec(BaseCodec[str]):
                 bit_buffer.read(len(self.terminator))
                 break
 
-            result += CHAR_CODEC.deserialize(bit_buffer)
+            result += CHAR_CODEC.deserialize(bit_buffer, endianness=endianness)
 
         return result
 

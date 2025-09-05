@@ -3,7 +3,7 @@ import socket
 from datetime import datetime
 from typing import Annotated, List
 
-from bytex import Endianes, Structure
+from bytex import Endianness, Structure
 from bytex.length_encodings import Terminator
 from bytex.types import Data
 
@@ -45,13 +45,13 @@ def build_request() -> HTTPRequest:
 
 def main():
     request = build_request()
-    raw_request = request.dump(endianes=Endianes.BIG)
+    raw_request = request.dump(endianness=Endianness.BIG)
 
     with socket.create_connection((HOST, 80)) as sock:
         sock.sendall(raw_request)
         raw_response = sock.recv(4096)
 
-    response = HTTPResponse.parse(raw_response, endianes=Endianes.BIG)
+    response = HTTPResponse.parse(raw_response, endianness=Endianness.BIG)
 
     print(f"status: {response.status_code} {response.status}")
     print("headers:")
