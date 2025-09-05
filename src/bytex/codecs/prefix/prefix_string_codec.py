@@ -15,11 +15,10 @@ class PrefixStringCodec(BaseCodec[str]):
     prefix_codec: IntegerCodec
 
     def serialize(self, value: str, endianes: Endianes) -> Bits:
-        bits = []
         length = len(value)
 
         self.prefix_codec.validate(length)
-        bits += self.prefix_codec.serialize(length, endianes=endianes)
+        bits = self.prefix_codec.serialize(length, endianes=endianes)
 
         for char in value:
             bits += CHAR_CODEC.serialize(char, endianes=endianes)
@@ -29,7 +28,7 @@ class PrefixStringCodec(BaseCodec[str]):
     def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> str:
         length = self.prefix_codec.deserialize(bit_buffer, endianes=endianes)
 
-        return from_bits(bit_buffer.read(8 * length)).decode()
+        return from_bits(bit_buffer.read(8 * length), endianes=Endianes.BIG).decode()
 
     def validate(self, value: str) -> None:
         if not isinstance(value, str):

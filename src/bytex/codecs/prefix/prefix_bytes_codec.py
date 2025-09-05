@@ -15,11 +15,10 @@ class PrefixBytesCodec(BaseCodec[bytes]):
     prefix_codec: IntegerCodec
 
     def serialize(self, value: bytes, endianes: Endianes) -> Bits:
-        bits = []
         length = len(value)
 
         self.prefix_codec.validate(length)
-        bits += self.prefix_codec.serialize(length, endianes=endianes)
+        bits = self.prefix_codec.serialize(length, endianes=endianes)
 
         for num in value:
             bits += U8_CODEC.serialize(num, endianes=endianes)
@@ -29,10 +28,10 @@ class PrefixBytesCodec(BaseCodec[bytes]):
     def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> bytes:
         length = self.prefix_codec.deserialize(bit_buffer, endianes=endianes)
 
-        return from_bits(bit_buffer.read(8 * length))
+        return from_bits(bit_buffer.read(8 * length), endianes=Endianes.BIG)
 
     def validate(self, value: bytes) -> None:
         if not isinstance(value, bytes):
             raise ValidationError(
-                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{bytes(str)}'"
+                f"Invalid value, a {self.__class__.__name__}'s value must be of type '{str(str)}'"
             )

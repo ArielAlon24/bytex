@@ -20,11 +20,10 @@ class PrefixListCodec(BaseListCodec[Sequence[T]], Generic[T]):
         return self.item_codec
 
     def serialize(self, value: Sequence[T], endianes: Endianes) -> Bits:
-        bits = []
         length = len(value)
 
         self.prefix_codec.validate(length)
-        bits += self.prefix_codec.serialize(length, endianes=endianes)
+        bits = self.prefix_codec.serialize(length, endianes=endianes)
 
         for num in value:
             bits += self.item_codec.serialize(num, endianes=endianes)
