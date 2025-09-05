@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from bytex.bits import BitBuffer, Bits, from_bits
-from bytex.bits.utils import swap_endianes
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.endianes import Endianes
@@ -22,14 +21,11 @@ class ExactBytesCodec(BaseCodec[bytes]):
         for char in value:
             bits += U8_CODEC.serialize(char, endianes=endianes)
 
-        if endianes == Endianes.LITTLE:
-            bits = swap_endianes(bits)
-
         return bits
 
     def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> bytes:
         return from_bits(
-            bit_buffer.read(U8_CODEC.bit_count * self.length), endianes=endianes
+            bit_buffer.read(U8_CODEC.bit_count * self.length), endianes=Endianes.BIG
         )
 
     def validate(self, value: bytes) -> None:

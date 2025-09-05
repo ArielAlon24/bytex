@@ -23,7 +23,9 @@ class ExactStringCodec(BaseCodec[str]):
         return bits
 
     def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> str:
-        return from_bits(bit_buffer.read(8 * self.length)).decode()
+        return from_bits(
+            bit_buffer.read(8 * self.length), endianes=Endianes.BIG
+        ).decode()
 
     def validate(self, value: str) -> None:
         if not isinstance(value, str):
