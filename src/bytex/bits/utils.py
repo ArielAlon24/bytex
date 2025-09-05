@@ -2,7 +2,7 @@ from typing import Union
 
 from bytex.bits.types import Bits
 from bytex.endianes import Endianes
-from bytex.errors import AlignmentError, ValidationError
+from bytex.errors import AlignmentError
 
 
 def to_bits(data: Union[str, bytes], endianes: Endianes = Endianes.BIG) -> Bits:
