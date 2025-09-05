@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.basic.data_codec import DataCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -38,8 +38,8 @@ def test_data_serialize(
     value: bytes, expected_big: Bits, expected_little: Bits
 ) -> None:
     codec = DataCodec()
-    assert codec.serialize(value, endianes=Endianes.BIG) == expected_big
-    assert codec.serialize(value, endianes=Endianes.LITTLE) == expected_little
+    assert codec.serialize(value, endianness=Endianness.BIG) == expected_big
+    assert codec.serialize(value, endianness=Endianness.LITTLE) == expected_little
 
 
 @pytest.mark.parametrize(
@@ -59,21 +59,21 @@ def test_data_deserialize(bits_big: Bits, bits_little: Bits, expected: bytes) ->
 
     buffer = BitBuffer()
     buffer.write(bits_big)
-    result = codec.deserialize(buffer, endianes=Endianes.BIG)
+    result = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result == expected
 
     buffer = BitBuffer()
     buffer.write(bits_little)
-    result = codec.deserialize(buffer, endianes=Endianes.LITTLE)
+    result = codec.deserialize(buffer, endianness=Endianness.LITTLE)
     assert result == expected
 
 
 @pytest.mark.parametrize("value", [b"", b"A", b"abc", bytes([1, 2, 3, 4])])
 def test_data_roundtrip(value: bytes) -> None:
     codec = DataCodec()
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value

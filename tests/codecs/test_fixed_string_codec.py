@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.fixed.fixed_string_codec import FixedStringCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -32,8 +32,8 @@ def test_fixed_string_validate_failure(value: Any, length: int) -> None:
 )
 def test_fixed_string_serialize(value: str, length: int, expected: Bits) -> None:
     codec = FixedStringCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -46,10 +46,10 @@ def test_fixed_string_serialize(value: str, length: int, expected: Bits) -> None
 )
 def test_fixed_string_deserialize(length: int, bits: Bits, expected: str) -> None:
     codec = FixedStringCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
@@ -57,10 +57,10 @@ def test_fixed_string_deserialize(length: int, bits: Bits, expected: str) -> Non
 def test_fixed_string_roundtrip(value: str, length: int) -> None:
     codec = FixedStringCodec(length=length)
 
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         padded = value + "\0" * (length - len(value))
         assert result == padded

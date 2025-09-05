@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class Endianes(Enum):
+class Endianness(Enum):
     BIG = "Big"
     LITTLE = "Little"

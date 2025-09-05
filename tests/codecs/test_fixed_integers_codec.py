@@ -6,7 +6,7 @@ from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.codecs.fixed.fixed_integers_codec import FixedIntegersCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 from bytex.sign import Sign
 
@@ -42,8 +42,8 @@ def test_fixed_integers_serialize(
     codec = FixedIntegersCodec(
         integer_codec=IntegerCodec(8, Sign.UNSIGNED), length=length
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -60,10 +60,10 @@ def test_fixed_integers_deserialize(
     codec = FixedIntegersCodec(
         integer_codec=IntegerCodec(8, Sign.UNSIGNED), length=length
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
@@ -74,11 +74,11 @@ def test_fixed_integers_roundtrip(value: list[int], length: int) -> None:
     codec = FixedIntegersCodec(
         integer_codec=IntegerCodec(8, Sign.UNSIGNED), length=length
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         padded = value + [0] * (length - len(value))
         assert result == padded
 
@@ -107,17 +107,17 @@ def test_fixed_integers_endian_item_order(
         integer_codec=IntegerCodec(integer_bits, Sign.UNSIGNED), length=1
     )
 
-    assert codec.serialize(value, endianes=Endianes.BIG) == expected_big
-    assert codec.serialize(value, endianes=Endianes.LITTLE) == expected_little
+    assert codec.serialize(value, endianness=Endianness.BIG) == expected_big
+    assert codec.serialize(value, endianness=Endianness.LITTLE) == expected_little
 
     buffer = BitBuffer()
     buffer.write(expected_big)
-    result_big = codec.deserialize(buffer, endianes=Endianes.BIG)
+    result_big = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result_big == value
 
     buffer = BitBuffer()
     buffer.write(expected_little)
-    result_little = codec.deserialize(buffer, endianes=Endianes.LITTLE)
+    result_little = codec.deserialize(buffer, endianness=Endianness.LITTLE)
     assert result_little == value
 
 
@@ -125,13 +125,13 @@ def test_fixed_integers_list_order_preserved() -> None:
     codec = FixedIntegersCodec(integer_codec=IntegerCodec(16, Sign.UNSIGNED), length=2)
     values = [0x1234, 0xABCD]
 
-    bits_big = codec.serialize(values, endianes=Endianes.BIG)
-    bits_little = codec.serialize(values, endianes=Endianes.LITTLE)
+    bits_big = codec.serialize(values, endianness=Endianness.BIG)
+    bits_little = codec.serialize(values, endianness=Endianness.LITTLE)
 
     buffer = BitBuffer()
     buffer.write(bits_big)
-    assert codec.deserialize(buffer, endianes=Endianes.BIG) == values
+    assert codec.deserialize(buffer, endianness=Endianness.BIG) == values
 
     buffer = BitBuffer()
     buffer.write(bits_little)
-    assert codec.deserialize(buffer, endianes=Endianes.LITTLE) == values
+    assert codec.deserialize(buffer, endianness=Endianness.LITTLE) == values

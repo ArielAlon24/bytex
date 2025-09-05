@@ -6,7 +6,7 @@ from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.basic.integer_codec import IntegerCodec
 from bytex.codecs.prefix.prefix_string_codec import PrefixStringCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 from bytex.sign import Sign
 
@@ -40,8 +40,8 @@ def test_prefix_string_serialize(value: str, expected: Bits) -> None:
     codec = PrefixStringCodec(
         prefix_codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -56,10 +56,10 @@ def test_prefix_string_deserialize(bits: Bits, expected: str) -> None:
     codec = PrefixStringCodec(
         prefix_codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
@@ -68,9 +68,9 @@ def test_prefix_string_roundtrip(value: str) -> None:
     codec = PrefixStringCodec(
         prefix_codec=IntegerCodec(bit_count=8, sign=Sign.UNSIGNED)
     )
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value

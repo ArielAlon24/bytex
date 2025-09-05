@@ -1,6 +1,6 @@
 from scapy import all as scapy
 
-from bytex import Endianes, Structure
+from bytex import Endianness, Structure
 from bytex.types import U3, U4, U16, U32, Flag
 
 
@@ -35,7 +35,7 @@ class TCP(Structure):
 def tcp_packet_handler(packet: scapy.Packet) -> None:
     data = packet[scapy.TCP].build()  # type: ignore
 
-    tcp = TCP.parse(data, endianes=Endianes.BIG)
+    tcp = TCP.parse(data, endianness=Endianness.BIG)
     scapy_tcp = packet[scapy.TCP]  # type: ignore
 
     assert tcp.source_port == scapy_tcp.sport

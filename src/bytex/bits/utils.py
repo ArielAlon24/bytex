@@ -1,11 +1,11 @@
 from typing import Union
 
 from bytex.bits.types import Bits
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import AlignmentError
 
 
-def to_bits(data: Union[str, bytes], endianes: Endianes = Endianes.BIG) -> Bits:
+def to_bits(data: Union[str, bytes], endianness: Endianness = Endianness.BIG) -> Bits:
     if isinstance(data, str):
         data = data.encode()
 
@@ -15,18 +15,18 @@ def to_bits(data: Union[str, bytes], endianes: Endianes = Endianes.BIG) -> Bits:
         for i in range(8):
             bits.append(bool((byte >> (7 - i)) & 1))
 
-    if endianes == Endianes.LITTLE:
-        bits = swap_endianes(bits)
+    if endianness == Endianness.LITTLE:
+        bits = swap_endianness(bits)
 
     return bits
 
 
-def from_bits(bits: Bits, endianes: Endianes = Endianes.BIG) -> bytes:
+def from_bits(bits: Bits, endianness: Endianness = Endianness.BIG) -> bytes:
     if len(bits) % 8 != 0:
         raise AlignmentError("Number of bits must be a multiple of 8")
 
-    if endianes == Endianes.LITTLE:
-        bits = swap_endianes(bits)
+    if endianness == Endianness.LITTLE:
+        bits = swap_endianness(bits)
 
     result = bytearray()
     for i in range(0, len(bits), 8):
@@ -83,7 +83,7 @@ def is_subsequence(sub: Bits, full: Bits) -> bool:
     return False
 
 
-def swap_endianes(bits: Bits) -> Bits:
+def swap_endianness(bits: Bits) -> Bits:
     swapped: Bits = []
     n = len(bits)
 

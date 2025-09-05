@@ -2,7 +2,7 @@ import pytest
 
 from bytex import BitBuffer
 from bytex.codecs import FlagCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -22,7 +22,7 @@ def test_flag_validate_failure(value):
 @pytest.mark.parametrize("value, expected_bits", [(True, [True]), (False, [False])])
 def test_flag_serialize(value: bool, expected_bits):
     codec = FlagCodec()
-    bits = codec.serialize(value, endianes=Endianes.BIG)
+    bits = codec.serialize(value, endianness=Endianness.BIG)
     assert bits == expected_bits
 
 
@@ -31,15 +31,15 @@ def test_flag_deserialize(bits, expected_value):
     codec = FlagCodec()
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer, endianes=Endianes.BIG)
+    result = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result is expected_value
 
 
 @pytest.mark.parametrize("value", [True, False])
 def test_flag_serialize_deserialize_roundtrip(value: bool):
     codec = FlagCodec()
-    bits = codec.serialize(value, endianes=Endianes.BIG)
+    bits = codec.serialize(value, endianness=Endianness.BIG)
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer, endianes=Endianes.BIG)
+    result = codec.deserialize(buffer, endianness=Endianness.BIG)
     assert result is value

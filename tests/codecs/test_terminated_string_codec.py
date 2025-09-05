@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.terminated.terminated_string_codec import TerminatedStringCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 TERMINATOR: Bits = string_to_bits("00000000")
@@ -41,8 +41,8 @@ def test_terminated_string_validate_failure_contains_terminator(value: str) -> N
 )
 def test_terminated_string_serialize(value: str, expected: Bits) -> None:
     codec = TerminatedStringCodec(terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -55,19 +55,19 @@ def test_terminated_string_serialize(value: str, expected: Bits) -> None:
 )
 def test_terminated_string_deserialize(bits: Bits, expected: str) -> None:
     codec = TerminatedStringCodec(terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
 @pytest.mark.parametrize("value", ["", "A", "ab", "01", "xyz"])
 def test_terminated_string_roundtrip(value: str) -> None:
     codec = TerminatedStringCodec(terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value

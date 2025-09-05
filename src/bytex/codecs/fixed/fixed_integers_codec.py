@@ -6,7 +6,7 @@ from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.base_list_codec import BaseListCodec
 from bytex.codecs.basic.char_codec import CharCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 CHAR_CODEC = CharCodec()
@@ -21,23 +21,23 @@ class FixedIntegersCodec(BaseListCodec[List[Annotated[int, IntegerCodec]]]):
         return self.integer_codec
 
     def serialize(
-        self, value: List[Annotated[int, IntegerCodec]], endianes: Endianes
+        self, value: List[Annotated[int, IntegerCodec]], endianness: Endianness
     ) -> Bits:
         bits = []
 
         for integer in value:
-            bits += self.integer_codec.serialize(integer, endianes=endianes)
+            bits += self.integer_codec.serialize(integer, endianness=endianness)
 
         for _ in range(self.length - len(value)):
-            bits += self.integer_codec.serialize(0, endianes=endianes)
+            bits += self.integer_codec.serialize(0, endianness=endianness)
 
         return bits
 
     def deserialize(
-        self, bit_buffer: BitBuffer, endianes: Endianes
+        self, bit_buffer: BitBuffer, endianness: Endianness
     ) -> List[Annotated[int, IntegerCodec]]:
         return [
-            self.integer_codec.deserialize(bit_buffer, endianes=endianes)
+            self.integer_codec.deserialize(bit_buffer, endianness=endianness)
             for _ in range(self.length)
         ]
 

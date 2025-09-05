@@ -1,17 +1,17 @@
 from typing import Callable
 
 from bytex.bits import BitBuffer
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import AlignmentError
 from bytex.structure.types import Fields
 
 
-def _create_dump(fields: Fields) -> Callable[[object, Endianes], bytes]:
-    def dump(self, endianes: Endianes = Endianes.LITTLE) -> bytes:
+def _create_dump(fields: Fields) -> Callable[[object, Endianness], bytes]:
+    def dump(self, endianness: Endianness = Endianness.LITTLE) -> bytes:
         buffer = BitBuffer()
         for name, field in fields.items():
             value = getattr(self, name)
-            buffer.write(field.codec.serialize(value, endianes=endianes))
+            buffer.write(field.codec.serialize(value, endianness=endianness))
 
         try:
             return buffer.to_bytes()

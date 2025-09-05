@@ -65,7 +65,7 @@ And you're done!
 You can now serialize and parse binary data with ease:
 
 ```python
-from bytex import Endianes
+from bytex import Endianness
 
 profile = UserProfile(
     user_type=UserType.ADMIN,
@@ -73,6 +73,6 @@ profile = UserProfile(
     name="admin"
 )
 
-binary: bytes = profile.dump(endianes=Endianes.LITTLE)
-parsed: UserProfile = UserProfile.parse(binary, endianes=Endianes.LITTLE)
+binary: bytes = profile.dump(endianness=Endianness.LITTLE)
+parsed: UserProfile = UserProfile.parse(binary, endianness=Endianness.LITTLE)
 ```

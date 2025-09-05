@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.basic.integer_codec import IntegerCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 from bytex.sign import Sign
 
@@ -25,8 +25,8 @@ class CharCodec(BaseCodec[str]):
 
         return U8_CODEC.validate(ord(value))
 
-    def serialize(self, value: str, endianes: Endianes) -> Bits:
-        return U8_CODEC.serialize(ord(value), endianes=endianes)
+    def serialize(self, value: str, endianness: Endianness) -> Bits:
+        return U8_CODEC.serialize(ord(value), endianness=endianness)
 
-    def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> str:
-        return chr(U8_CODEC.deserialize(bit_buffer, endianes=endianes))
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> str:
+        return chr(U8_CODEC.deserialize(bit_buffer, endianness=endianness))

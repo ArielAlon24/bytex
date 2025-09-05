@@ -4,7 +4,7 @@ from typing import Generic, Sequence, TypeVar
 from bytex.bits import BitBuffer, Bits
 from bytex.codecs.base_codec import BaseCodec
 from bytex.codecs.base_list_codec import BaseListCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 T = TypeVar("T")
@@ -18,19 +18,19 @@ class ExactListCodec(BaseListCodec[Sequence[T]], Generic[T]):
     def get_inner_codec(self) -> BaseCodec:
         return self.item_codec
 
-    def serialize(self, value: Sequence[T], endianes: Endianes) -> Bits:
+    def serialize(self, value: Sequence[T], endianness: Endianness) -> Bits:
         self.validate(value)
 
         bits = []
 
         for item in value:
-            bits.extend(self.item_codec.serialize(item, endianes=endianes))
+            bits.extend(self.item_codec.serialize(item, endianness=endianness))
 
         return bits
 
-    def deserialize(self, bit_buffer: BitBuffer, endianes: Endianes) -> Sequence[T]:
+    def deserialize(self, bit_buffer: BitBuffer, endianness: Endianness) -> Sequence[T]:
         return [
-            self.item_codec.deserialize(bit_buffer, endianes=endianes)
+            self.item_codec.deserialize(bit_buffer, endianness=endianness)
             for _ in range(self.length)
         ]
 

@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.exact.exact_string_codec import ExactStringCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -32,8 +32,8 @@ def test_exact_string_validate_failure(value: Any, length: int) -> None:
 )
 def test_exact_string_serialize(value: str, length: int, expected: Bits) -> None:
     codec = ExactStringCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -46,19 +46,19 @@ def test_exact_string_serialize(value: str, length: int, expected: Bits) -> None
 )
 def test_exact_string_deserialize(length: int, bits: Bits, expected: str) -> None:
     codec = ExactStringCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
 @pytest.mark.parametrize("value, length", [("A", 1), ("ab", 2), ("01", 2), ("xyz", 3)])
 def test_exact_string_roundtrip(value: str, length: int) -> None:
     codec = ExactStringCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value

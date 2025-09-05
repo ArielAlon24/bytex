@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.basic.char_codec import CharCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -34,7 +34,7 @@ def test_char_validate_failure(value: Any) -> None:
 def test_char_serialize(char: str, expected_bits: Bits) -> None:
     codec = CharCodec()
 
-    assert codec.serialize(char, endianes=Endianes.BIG) == expected_bits
+    assert codec.serialize(char, endianness=Endianness.BIG) == expected_bits
 
 
 @pytest.mark.parametrize(
@@ -50,17 +50,17 @@ def test_char_deserialize(bits: Bits, char: str) -> None:
     codec = CharCodec()
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer, endianes=Endianes.LITTLE)
+    result = codec.deserialize(buffer, endianness=Endianness.LITTLE)
     assert result == char
 
 
 @pytest.mark.parametrize("char", ["A", "a", "0", " ", "\n"])
 def test_char_roundtrip(char: str) -> None:
     codec = CharCodec()
-    bits = codec.serialize(char, endianes=Endianes.BIG)
+    bits = codec.serialize(char, endianness=Endianness.BIG)
 
     buffer = BitBuffer()
     buffer.write(bits)
-    result = codec.deserialize(buffer, endianes=Endianes.LITTLE)
+    result = codec.deserialize(buffer, endianness=Endianness.LITTLE)
 
     assert result == char

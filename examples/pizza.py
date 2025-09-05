@@ -2,7 +2,7 @@ from enum import auto
 from typing import Annotated, List
 
 from bytex import Structure, StructureEnum
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.length_encodings import Prefix, Terminator
 from bytex.types import U8, U16
 
@@ -43,7 +43,7 @@ def main() -> None:
 
     print(order)
 
-    print(f"Order Dumped: {order.dump(endianes=Endianes.BIG)!r}")
+    print(f"Order Dumped: {order.dump(endianness=Endianness.BIG)!r}")
 
     roundtrip = PizzaOrder.parse(order.dump())
 

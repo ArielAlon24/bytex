@@ -1,7 +1,7 @@
 from typing import Annotated, List
 
 from bytex import Structure
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.length_encodings import Exact, Fixed, Prefix
 from bytex.types import U8, U32
 
@@ -20,10 +20,10 @@ def main() -> None:
     )
     print(sequences)
 
-    data = sequences.dump(endianes=Endianes.LITTLE)
+    data = sequences.dump(endianness=Endianness.LITTLE)
     print(f"Dumped length: {len(data)}")
 
-    roundtrip = Sequences.parse(data, endianes=Endianes.LITTLE)
+    roundtrip = Sequences.parse(data, endianness=Endianness.LITTLE)
     print(roundtrip)
 
     assert roundtrip.text == sequences.text

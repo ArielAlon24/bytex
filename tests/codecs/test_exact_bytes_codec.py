@@ -5,7 +5,7 @@ import pytest
 from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.exact.exact_bytes_codec import ExactBytesCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 
@@ -32,8 +32,8 @@ def test_exact_bytes_validate_failure(value: Any, length: int) -> None:
 )
 def test_exact_bytes_serialize(value: bytes, length: int, expected: Bits) -> None:
     codec = ExactBytesCodec(length=length)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -47,10 +47,10 @@ def test_exact_bytes_serialize(value: bytes, length: int, expected: Bits) -> Non
 def test_exact_bytes_deserialize(length: int, bits: Bits, expected: bytes) -> None:
     codec = ExactBytesCodec(length=length)
 
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
@@ -60,9 +60,9 @@ def test_exact_bytes_deserialize(length: int, bits: Bits, expected: bytes) -> No
 def test_exact_bytes_roundtrip(value: bytes, length: int) -> None:
     codec = ExactBytesCodec(length=length)
 
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value

@@ -6,7 +6,7 @@ from bytex import BitBuffer
 from bytex.bits import Bits, string_to_bits
 from bytex.codecs.basic.char_codec import CharCodec
 from bytex.codecs.terminated.terminated_list_codec import TerminatedListCodec
-from bytex.endianes import Endianes
+from bytex.endianness import Endianness
 from bytex.errors import ValidationError
 
 TERMINATOR: Bits = string_to_bits("00000000")
@@ -35,8 +35,8 @@ def test_terminated_list_validate_failure(value: Any) -> None:
 )
 def test_terminated_list_serialize(value: list[str], expected: Bits) -> None:
     codec = TerminatedListCodec(item_codec=CharCodec(), terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        assert codec.serialize(value, endianes=endianes) == expected
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        assert codec.serialize(value, endianness=endianness) == expected
 
 
 @pytest.mark.parametrize(
@@ -49,19 +49,19 @@ def test_terminated_list_serialize(value: list[str], expected: Bits) -> None:
 )
 def test_terminated_list_deserialize(bits: Bits, expected: list[str]) -> None:
     codec = TerminatedListCodec(item_codec=CharCodec(), terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == expected
 
 
 @pytest.mark.parametrize("value", [[], ["A"], ["a", "b"], ["x", "y", "z"]])
 def test_terminated_list_roundtrip(value: list[str]) -> None:
     codec = TerminatedListCodec(item_codec=CharCodec(), terminator=TERMINATOR)
-    for endianes in (Endianes.BIG, Endianes.LITTLE):
-        bits: Bits = codec.serialize(value, endianes=endianes)
+    for endianness in (Endianness.BIG, Endianness.LITTLE):
+        bits: Bits = codec.serialize(value, endianness=endianness)
         buffer = BitBuffer()
         buffer.write(bits)
-        result = codec.deserialize(buffer, endianes=endianes)
+        result = codec.deserialize(buffer, endianness=endianness)
         assert result == value
